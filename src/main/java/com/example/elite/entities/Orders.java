@@ -20,8 +20,8 @@ public class Orders {
     private boolean status;
     private LocalDate createDate;
 
-    @ManyToMany
-    List<Product> productList = new ArrayList<>();
+    @OneToMany(mappedBy = "orders")
+    List<OrderDetail> orderDetails = new ArrayList<>();
 
     @ManyToOne
     User user = new User();

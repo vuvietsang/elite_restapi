@@ -25,8 +25,8 @@ public class Product {
     private LocalDate createDate;
     private LocalDate updateDate;
 
-    @ManyToMany
-    List<Orders> orders = new ArrayList<>();
+    @OneToMany(mappedBy = "product")
+    List<OrderDetail> orderDetails = new ArrayList<>();
 
     @OneToMany(mappedBy = "product")
     List<Rating> ratings = new ArrayList<>();
