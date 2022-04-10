@@ -3,10 +3,7 @@ package com.example.elite.entities;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,9 +16,9 @@ import java.util.List;
 public class Role {
     @Id
     @GeneratedValue
-    private int role;
+    private int id;
     private String roleName;
 
-    @OneToMany(mappedBy = "role")
+    @OneToMany(mappedBy = "role",fetch = FetchType.LAZY )
     List<User> userList = new ArrayList<>();
 }

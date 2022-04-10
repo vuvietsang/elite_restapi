@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 public class TokenVerifier extends OncePerRequestFilter {
     private JwtConfig jwtConfig;
     private SecretKey secretKey;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authorizationHeader = request.getHeader("Authorization");

@@ -3,6 +3,7 @@ package com.example.elite.entities;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,6 @@ public class User {
     @OneToMany(mappedBy = "user")
     List<Orders> ordersList = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     Role role = new Role();
 }
