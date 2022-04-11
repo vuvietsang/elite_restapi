@@ -7,15 +7,19 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class LoginDTO {
     @NotBlank
-    @Length(min =6)
+    @NotNull(message = "Name cannot be null")
+    @Size(min =6)
     private String username;
     @NotBlank
-    @Length(min =6)
+    @NotNull(message = "Password cannot be null")
+    @Size(min =6)
     private String password;
 }

@@ -69,6 +69,7 @@ public class UserServiceImplement implements UserService {
         LoginResponseDTO loginResponseDTO =null;
         User checkUser = userRepository.findUserByUsername(user.getUsername());
         Role role =roleRepository.findByRoleName("USER");
+        if(role==null) return null;
         if(checkUser==null){
             User userTmp = User.builder().username(user.getUsername()).email(user.getEmail()).fullName(user.getFullName()).role(role)
                             .password(passwordEncoder.encode(user.getPassword())).status(true).createDate(LocalDate.now()).build();

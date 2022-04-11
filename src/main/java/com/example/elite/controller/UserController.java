@@ -23,18 +23,17 @@ public class UserController {
     @Autowired
     private UserService userService;
     @PostMapping("/login")
-    public ResponseEntity<ResponseDTO> login(@RequestBody @Valid LoginDTO user){
+    public ResponseEntity<ResponseDTO> login(@Valid @RequestBody LoginDTO user){
         ResponseDTO responseDTO = new ResponseDTO();
         LoginResponseDTO loginResponseDTO=null;
         try {
              loginResponseDTO = userService.login(user);
-        }
-        catch (BadCredentialsException e){
-            responseDTO.setErrorCode("WRONG PASSWORD!");
-            return ResponseEntity.status(403).body(responseDTO);
+        }catch (Exception ex){
+            responseDTO.setErrorCode(ex.getMessage());
+            return ResponseEntity.status(400).body(responseDTO);
         }
         if(loginResponseDTO==null){
-            return ResponseEntity.status(403).body(responseDTO);
+            return ResponseEntity.status(400).body(responseDTO);
         }
         else{
         responseDTO.setData(loginResponseDTO);
@@ -43,12 +42,12 @@ public class UserController {
         }
     }
     @PostMapping("/register")
-    public ResponseEntity<ResponseDTO> register(@RequestBody @Valid User user){
+    public ResponseEntity<ResponseDTO> register(@Valid @RequestBody User user){
         ResponseDTO responseDTO = new ResponseDTO();
         LoginResponseDTO loginResponseDTO = userService.register(user);
         if(loginResponseDTO==null){
             responseDTO.setErrorCode("REGISTER_FAIL");
-            return ResponseEntity.status(403).body(responseDTO);
+            return ResponseEntity.status(400).body(responseDTO);
         }
         else{
             responseDTO.setData(loginResponseDTO);
