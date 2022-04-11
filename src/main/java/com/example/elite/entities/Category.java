@@ -8,8 +8,7 @@ import java.util.List;
 
 @Entity
 @Builder
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Category {
@@ -17,7 +16,7 @@ public class Category {
     @GeneratedValue
     private int id;
     private String name;
-    private String desc;
+    private String description;
 
     @OneToMany(mappedBy = "category")
     List<Product> productList= new ArrayList<>();

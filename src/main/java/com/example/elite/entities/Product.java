@@ -33,5 +33,4 @@ public class Product {
 
     @ManyToOne
     Category category = new Category();
-
 }
