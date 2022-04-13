@@ -28,6 +28,7 @@ public class User {
     private String password;
     @Email
     private String email;
+    private String phone;
     private boolean status;
     private LocalDate createDate;
 

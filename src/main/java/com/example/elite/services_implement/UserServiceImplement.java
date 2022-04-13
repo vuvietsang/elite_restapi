@@ -2,6 +2,7 @@ package com.example.elite.services_implement;
 
 import com.example.elite.dto.LoginDTO;
 import com.example.elite.dto.LoginResponseDTO;
+import com.example.elite.dto.UserDTO;
 import com.example.elite.entities.Role;
 import com.example.elite.entities.User;
 import com.example.elite.jwt.JwtConfig;
@@ -10,6 +11,10 @@ import com.example.elite.repository.UserRepository;
 import com.example.elite.services.UserService;
 import io.jsonwebtoken.Jwts;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -64,7 +69,7 @@ public class UserServiceImplement implements UserService {
         Role role =roleRepository.findByRoleName("USER");
         if(role==null) return null;
         if(checkUser==null){
-            User userTmp = User.builder().username(user.getUsername()).email(user.getEmail()).fullName(user.getFullName()).role(role)
+            User userTmp = User.builder().username(user.getUsername()).email(user.getEmail()).fullName(user.getFullName()).role(role).phone(user.getPhone())
                             .password(passwordEncoder.encode(user.getPassword())).status(true).createDate(LocalDate.now()).build();
            try {
                userRepository.save(userTmp);
@@ -112,5 +117,14 @@ public class UserServiceImplement implements UserService {
         userTmp.setEmail(user.getEmail());
         userRepository.save(userTmp);
         return true;
+    }
+
+    @Override
+    public Page<UserDTO> getAllUser(int pageNum, int pageSize) {
+        ModelMapper modelMapper = new ModelMapper();
+        Pageable pageable = PageRequest.of(pageNum,pageSize);
+        Page<User> pageUser = userRepository.findAll(pageable);
+        Page<UserDTO> pageUserDTO = pageUser.map(user->modelMapper.map(user,UserDTO.class));
+        return pageUserDTO;
     }
 }

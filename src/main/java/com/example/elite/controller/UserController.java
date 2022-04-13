@@ -3,9 +3,11 @@ package com.example.elite.controller;
 import com.example.elite.dto.LoginDTO;
 import com.example.elite.dto.LoginResponseDTO;
 import com.example.elite.dto.ResponseDTO;
+import com.example.elite.dto.UserDTO;
 import com.example.elite.entities.User;
 import com.example.elite.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -87,7 +89,7 @@ public class UserController {
     }
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/update/{id}")
-    public ResponseEntity<ResponseDTO> add(@RequestBody User user, @PathVariable int id){
+    public ResponseEntity<ResponseDTO> update(@RequestBody User user, @PathVariable(name="id") int id){
         ResponseDTO responseDTO = new ResponseDTO();
         boolean check = userService.updateUser(user,id);
         if(check){
@@ -99,4 +101,21 @@ public class UserController {
             return ResponseEntity.status(400).body(responseDTO);
         }
     }
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/pageNum={num}&pageSize={size}")
+    public ResponseEntity<ResponseDTO> finAll(@PathVariable(name="num") int pageNum, @PathVariable(name="size") int pageSize){
+        ResponseDTO responseDTO = new ResponseDTO();
+
+        Page<UserDTO> users = userService.getAllUser(pageNum,pageSize);
+        if(users!=null){
+            responseDTO.setData(users);
+            responseDTO.setSuccessCode("GET ALL SUCCESSFULLY");
+            return ResponseEntity.ok().body(responseDTO);
+        }
+        else  {
+            responseDTO.setErrorCode("GET ALL FAIL");
+            return ResponseEntity.status(400).body(responseDTO);
+        }
+    }
+
 }
