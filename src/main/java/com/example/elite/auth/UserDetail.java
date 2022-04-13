@@ -17,7 +17,6 @@ import java.util.Collection;
 @Builder
 public class UserDetail implements UserDetails {
     private User user;
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         SimpleGrantedAuthority authorities = new SimpleGrantedAuthority(user.getRole().getRoleName());
@@ -25,7 +24,6 @@ public class UserDetail implements UserDetails {
         list.add(authorities);
         return list;
     }
-
     @Override
     public String getPassword() {
         return user.getPassword();

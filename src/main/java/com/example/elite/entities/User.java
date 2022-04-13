@@ -22,6 +22,7 @@ public class User {
     @Size(min=6,max=30)
     private String fullName;
     @Size(min=6)
+    @Column(unique = true)
     private String username;
     @Size(min=6)
     private String password;

@@ -2,7 +2,10 @@ package com.example.elite.security;
 
 import com.example.elite.auth.ApplicationUserService;
 import com.example.elite.jwt.JwtConfig;
+import com.example.elite.jwt.TokenVerifier;
 import io.jsonwebtoken.security.Keys;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +19,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -23,24 +27,17 @@ import javax.crypto.SecretKey;
 
 @Configuration
 @EnableWebSecurity
+@AllArgsConstructor
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final ApplicationUserService applicationUserService;
-    private  SecretKey secretKey;
-
     private  JwtConfig jwtConfig;
-    @Autowired
-    @Lazy
-    public ApplicationSecurityConfig(ApplicationUserService applicationUserService,  JwtConfig jwtConfig) {
-        this.applicationUserService = applicationUserService;
-        this.jwtConfig = jwtConfig;
-    }
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).
-                and().authorizeRequests().antMatchers("/user/register", "/user/login")
+                and().addFilterBefore(new TokenVerifier(jwtConfig), UsernamePasswordAuthenticationFilter.class)
+                .authorizeRequests().antMatchers("/user/register", "/user/login")
                 .permitAll().anyRequest().authenticated();
     }
 
@@ -62,6 +59,10 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
+    @Bean
+    public javax.crypto.SecretKey getSecretKey() {
+        return Keys.hmacShaKeyFor(jwtConfig.getSecretKey().getBytes());
+    }
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {
@@ -73,8 +74,5 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         };
     }
 
-    @Bean
-    public SecretKey getSecretKey() {
-        return Keys.hmacShaKeyFor(jwtConfig.getSecretKey().getBytes());
-    }
+
 }

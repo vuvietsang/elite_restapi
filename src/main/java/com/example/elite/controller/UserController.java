@@ -7,12 +7,9 @@ import com.example.elite.entities.User;
 import com.example.elite.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -23,7 +20,7 @@ public class UserController {
     @Autowired
     private UserService userService;
     @PostMapping("/login")
-    public ResponseEntity<ResponseDTO> login(@Valid @RequestBody LoginDTO user){
+    public ResponseEntity<ResponseDTO> login(@RequestBody @Valid LoginDTO user){
         ResponseDTO responseDTO = new ResponseDTO();
         LoginResponseDTO loginResponseDTO=null;
         try {
@@ -42,9 +39,14 @@ public class UserController {
         }
     }
     @PostMapping("/register")
-    public ResponseEntity<ResponseDTO> register(@Valid @RequestBody User user){
+    public ResponseEntity<ResponseDTO> register(@RequestBody @Valid User user){
         ResponseDTO responseDTO = new ResponseDTO();
-        LoginResponseDTO loginResponseDTO = userService.register(user);
+        LoginResponseDTO loginResponseDTO = null;
+        try {
+            loginResponseDTO = userService.register(user);
+        } catch (Exception e) {
+            responseDTO.setErrorCode(e.getMessage());
+        }
         if(loginResponseDTO==null){
             responseDTO.setErrorCode("REGISTER_FAIL");
             return ResponseEntity.status(400).body(responseDTO);
@@ -53,6 +55,48 @@ public class UserController {
             responseDTO.setData(loginResponseDTO);
             responseDTO.setSuccessCode("REGISTER_SUCCESS");
             return ResponseEntity.ok().body(responseDTO);
+        }
+    }
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ResponseDTO> delete(@PathVariable(name="id") String userId){
+        ResponseDTO responseDTO = new ResponseDTO();
+        boolean check = userService.deleteUserById(Integer.parseInt(userId));
+        if(check){
+            responseDTO.setSuccessCode("DELETE SUCCESSFULLY");
+            return ResponseEntity.ok().body(responseDTO);
+        }
+        else  {
+            responseDTO.setErrorCode("DELETE FAIL");
+            return ResponseEntity.status(400).body(responseDTO);
+        }
+    }
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/add")
+    public ResponseEntity<ResponseDTO> add(@RequestBody User user){
+        ResponseDTO responseDTO = new ResponseDTO();
+        boolean check = userService.addUser(user);
+        if(check){
+            responseDTO.setSuccessCode("ADD SUCCESSFULLY");
+            return ResponseEntity.ok().body(responseDTO);
+        }
+        else  {
+            responseDTO.setErrorCode("ADD FAIL");
+            return ResponseEntity.status(400).body(responseDTO);
+        }
+    }
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/update/{id}")
+    public ResponseEntity<ResponseDTO> add(@RequestBody User user, @PathVariable int id){
+        ResponseDTO responseDTO = new ResponseDTO();
+        boolean check = userService.updateUser(user,id);
+        if(check){
+            responseDTO.setSuccessCode("UPDATE SUCCESSFULLY");
+            return ResponseEntity.ok().body(responseDTO);
+        }
+        else  {
+            responseDTO.setErrorCode("UPDATE FAIL");
+            return ResponseEntity.status(400).body(responseDTO);
         }
     }
 }
