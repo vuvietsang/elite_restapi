@@ -24,6 +24,7 @@ public class Product {
     private String image;
     private LocalDate createDate;
     private LocalDate updateDate;
+    private boolean status;
 
     @OneToMany(mappedBy = "product")
     List<OrderDetail> orderDetails = new ArrayList<>();
