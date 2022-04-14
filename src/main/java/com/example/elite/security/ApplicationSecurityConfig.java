@@ -37,7 +37,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).
                 and().addFilterBefore(new TokenVerifier(jwtConfig), UsernamePasswordAuthenticationFilter.class)
-                .authorizeRequests().antMatchers("/user/register", "/user/login")
+                .authorizeRequests().antMatchers("/user/register", "/user/login","/products")
                 .permitAll().anyRequest().authenticated();
     }
 

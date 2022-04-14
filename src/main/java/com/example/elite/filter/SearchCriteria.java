@@ -1,4 +1,4 @@
-package com.example.elite.specification_search;
+package com.example.elite.filter;
 
 
 import lombok.AllArgsConstructor;

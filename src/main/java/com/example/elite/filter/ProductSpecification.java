@@ -1,10 +1,14 @@
-package com.example.elite.specification_search;
+package com.example.elite.filter;
 
 import com.example.elite.entities.Product;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.*;
 
+@AllArgsConstructor
+@NoArgsConstructor
 public class ProductSpecification implements Specification<Product> {
     private SearchCriteria criteria;
     @Override
