@@ -60,7 +60,7 @@ public class UserController {
         }
     }
     @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<ResponseDTO> delete(@PathVariable(name="id") String userId){
         ResponseDTO responseDTO = new ResponseDTO();
         boolean check = userService.deleteUserById(Integer.parseInt(userId));
