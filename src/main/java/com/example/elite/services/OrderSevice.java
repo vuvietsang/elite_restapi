@@ -1,6 +1,7 @@
 package com.example.elite.services;
 
 
+import com.example.elite.dto.OrderDTO;
 import com.example.elite.dto.OrderDetailDTO;
 import com.example.elite.entities.Orders;
 import org.springframework.data.domain.Page;
@@ -8,7 +9,7 @@ import org.springframework.data.domain.Page;
 
 
 public interface OrderSevice {
-    Orders getOrder(int orderId);
+    OrderDTO getOrder(int orderId);
 
     boolean deleteOrder(int orderId);
 
@@ -18,9 +19,9 @@ public interface OrderSevice {
 
     boolean confirmOrder(int orderId);
 
-    Page<Orders> getAllOrders(int pageNum, int pageSize);
+    Page<OrderDTO> getAllOrders(int pageNum, int pageSize);
 
-    Page<Orders> getOrderByUserId(int pageNum, int pageSize, int userId);
+    Page<OrderDTO> getOrderByUserId(int pageNum, int pageSize, int userId);
 
-    Page<Orders> getOrdersByEmail(int pageNum, int pageSize, String email);
+    Page<OrderDTO> getOrdersByEmail(int pageNum, int pageSize, String email);
 }

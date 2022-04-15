@@ -13,5 +13,4 @@ import lombok.NoArgsConstructor;
 public class OrderDetailDTO {
     private String productId;
     private int quantity;
-    private double price;
 }

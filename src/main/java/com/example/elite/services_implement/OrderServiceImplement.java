@@ -1,5 +1,6 @@
 package com.example.elite.services_implement;
 
+import com.example.elite.dto.OrderDTO;
 import com.example.elite.dto.OrderDetailDTO;
 import com.example.elite.entities.OrderDetail;
 import com.example.elite.entities.Orders;
@@ -13,6 +14,7 @@ import com.example.elite.services.OrderSevice;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,10 +32,13 @@ public class OrderServiceImplement implements OrderSevice {
     UserRepository userRepository;
     ProductRepository productRepository;
     OrderDetailsRepository orderDetailsRepository;
+    ModelMapper modelMapper = new ModelMapper();
 
     @Override
-    public Orders getOrder(int orderId) {
-        return orderRepository.getById(orderId);
+    public OrderDTO getOrder(int orderId) {
+        Orders orders = orderRepository.getById(orderId);
+        OrderDTO orderDTO = modelMapper.map(orders,OrderDTO.class);
+        return orderDTO;
     }
 
     @Override
@@ -80,7 +85,8 @@ public class OrderServiceImplement implements OrderSevice {
     public boolean confirmOrder(int orderId) {
         Orders orders = orderRepository.getById(orderId);
         if(orders!=null){
-            orders.setStatus(false);
+            orders.setStatus(true);
+            orderRepository.save(orders);
             return true;
         }
         else{
@@ -89,24 +95,25 @@ public class OrderServiceImplement implements OrderSevice {
     }
 
     @Override
-    public Page<Orders> getAllOrders(int pageNum, int pageSize) {
+    public Page<OrderDTO> getAllOrders(int pageNum, int pageSize) {
         Pageable pageable = PageRequest.of(pageNum,pageSize);
         Page<Orders> pageOrders = orderRepository.findAll(pageable);
-        return pageOrders;
+        Page<OrderDTO> orderDTOPage = pageOrders.map(order -> modelMapper.map(order,OrderDTO.class));
+        return orderDTOPage;
     }
 
     @Override
-    public Page<Orders> getOrderByUserId(int pageNum, int pageSize, int userId) {
+    public Page<OrderDTO> getOrderByUserId(int pageNum, int pageSize, int userId) {
         Pageable pageable = PageRequest.of(pageNum,pageSize);
         Page<Orders> pageOrders = orderRepository.getOrdersByUserId(pageable, userId);
-        return pageOrders;
+        Page<OrderDTO> orderDTOPage = pageOrders.map(order -> modelMapper.map(order,OrderDTO.class));
+        return orderDTOPage;
     }
-
-
     @Override
-    public Page<Orders> getOrdersByEmail(int pageNum, int pageSize, String email) {
+    public Page<OrderDTO> getOrdersByEmail(int pageNum, int pageSize, String email) {
         Pageable pageable = PageRequest.of(pageNum,pageSize);
         Page<Orders> pageOrders = orderRepository.getOrdersByUserEmail(pageable, email);
-        return pageOrders;
+        Page<OrderDTO> orderDTOPage = pageOrders.map(order -> modelMapper.map(order,OrderDTO.class));
+        return orderDTOPage;
     }
 }
