@@ -19,6 +19,7 @@ public class Orders {
     private int id;
     private boolean status;
     private LocalDate createDate;
+    private double totalPrice;
 
     @OneToMany(mappedBy = "orders")
     List<OrderDetail> orderDetails = new ArrayList<>();

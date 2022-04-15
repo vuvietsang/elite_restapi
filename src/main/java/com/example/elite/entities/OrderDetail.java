@@ -18,6 +18,8 @@ public class OrderDetail {
     @Id
     @GeneratedValue
     private int id;
+    private int quantity;
+    private double price;
 
     @ManyToOne
     Product product = new Product();
