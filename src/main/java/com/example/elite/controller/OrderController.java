@@ -10,7 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("orders")
 @RequiredArgsConstructor
@@ -59,7 +59,7 @@ public class OrderController {
     }
 
     @PutMapping("/confirm/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','SALER')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<ResponseDTO> confirmOrder(@PathVariable("id") int orderId) {
         ResponseDTO response = new ResponseDTO();
         try {

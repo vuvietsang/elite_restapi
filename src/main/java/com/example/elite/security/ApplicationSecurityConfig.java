@@ -5,11 +5,8 @@ import com.example.elite.jwt.JwtConfig;
 import com.example.elite.jwt.TokenVerifier;
 import io.jsonwebtoken.security.Keys;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -23,7 +20,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import javax.crypto.SecretKey;
 
 @Configuration
 @EnableWebSecurity
@@ -37,7 +33,13 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).
                 and().addFilterBefore(new TokenVerifier(jwtConfig), UsernamePasswordAuthenticationFilter.class)
-                .authorizeRequests().antMatchers("/user/register", "/user/login","/products")
+                .authorizeRequests().antMatchers("/user/register",
+                        "/user/login",
+                        "/products",
+                        "/swagger-resources/**",
+                        "/v2/api-docs",
+                        "/webjars/**",
+                        "/swagger-ui/**")
                 .permitAll().anyRequest().authenticated();
     }
 

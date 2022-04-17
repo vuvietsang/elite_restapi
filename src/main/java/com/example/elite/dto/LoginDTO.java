@@ -14,10 +14,12 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LoginDTO {
+
     @NotBlank
     @NotNull(message = "Name cannot be null")
     @Size(min =6)
     private String username;
+
     @NotBlank
     @NotNull(message = "Password cannot be null")
     @Size(min =6)

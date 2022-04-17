@@ -6,6 +6,9 @@ import com.example.elite.dto.ResponseDTO;
 import com.example.elite.dto.UserDTO;
 import com.example.elite.entities.User;
 import com.example.elite.services.UserService;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -15,11 +18,12 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-@Controller
+@RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("user")
+@FieldDefaults(makeFinal = true)
+@RequiredArgsConstructor
 public class UserController {
-    @Autowired
     private UserService userService;
     @PostMapping("/login")
     public ResponseEntity<ResponseDTO> login(@RequestBody @Valid LoginDTO user){
