@@ -7,6 +7,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
 @AllArgsConstructor
@@ -15,12 +19,18 @@ import java.time.LocalDate;
 @Builder
 public class ProductDTO {
     private long id;
+    @Size(min=3)
     private String name;
+    @Max(1000)
     private int quantity;
+    @Size(min=10)
     private String description;
+    @Min(100)
     private double price;
+    @NotBlank(message = "Image can not be empty")
     private String image;
     private LocalDate createDate;
     private LocalDate updateDate;
+    @NotBlank(message = "Category can not be empty")
     private String categoryName;
 }

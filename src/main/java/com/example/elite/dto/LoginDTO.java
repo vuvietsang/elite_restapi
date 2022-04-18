@@ -15,13 +15,9 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 public class LoginDTO {
 
-    @NotBlank
-    @NotNull(message = "Name cannot be null")
-    @Size(min =6)
+    @Size(min =6,message = "Username length must be greater than 6 characters")
     private String username;
 
-    @NotBlank
-    @NotNull(message = "Password cannot be null")
-    @Size(min =6)
+    @Size(min =6,message = "Password length must be greater than 6 characters")
     private String password;
 }
