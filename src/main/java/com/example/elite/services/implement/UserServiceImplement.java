@@ -1,4 +1,4 @@
-package com.example.elite.services_implement;
+package com.example.elite.services.implement;
 
 import com.example.elite.dto.LoginDTO;
 import com.example.elite.dto.LoginResponseDTO;
@@ -9,8 +9,10 @@ import com.example.elite.jwt.JwtConfig;
 import com.example.elite.repository.RoleRepository;
 import com.example.elite.repository.UserRepository;
 import com.example.elite.services.UserService;
+import com.example.elite.utils.Utils;
 import io.jsonwebtoken.Jwts;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,7 +28,8 @@ import org.springframework.stereotype.Service;
 import javax.crypto.SecretKey;
 import java.time.LocalDate;
 import java.util.Date;
-@AllArgsConstructor
+@RequiredArgsConstructor
+@FieldDefaults(makeFinal = true)
 @Service
 public class UserServiceImplement implements UserService {
     private UserRepository userRepository;
@@ -35,6 +38,8 @@ public class UserServiceImplement implements UserService {
     private PasswordEncoder passwordEncoder;
     private AuthenticationManager authenticationManager;
     private RoleRepository roleRepository;
+
+
 
     @Override
     public User findByUserName(String username) {
@@ -48,17 +53,14 @@ public class UserServiceImplement implements UserService {
             Authentication authenticate = authenticationManager.authenticate(authentication);
             if(authenticate.isAuthenticated()){
                 User userAuthenticated = userRepository.findUserByUsername(user.getUsername());
-                String token = Jwts.builder().setSubject(authenticate.getName())
-                        .claim("authorities",authenticate.getAuthorities())
-                        .claim("userId",userAuthenticated.getId())
-                        .setIssuedAt((new Date())).setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(jwtConfig.getTokenExpirationAfterDays()))).signWith(secretKey).compact();
+                String token2 = Utils.buildJWT(authenticate,userAuthenticated,secretKey,jwtConfig);
                 loginResponseDTO = LoginResponseDTO.builder()
                         .userId(userAuthenticated.getId())
                         .fullName(userAuthenticated.getFullName())
                         .username(userAuthenticated.getUsername())
                         .email(userAuthenticated.getEmail())
                         .roleName(userAuthenticated.getRole().getRoleName())
-                        .token(jwtConfig.getTokenPrefix()+token).build();
+                        .token(jwtConfig.getTokenPrefix()+token2).build();
             }
         return loginResponseDTO;
     }

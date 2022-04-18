@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @FieldDefaults(makeFinal = true)
 @RequiredArgsConstructor
 public class UserController {
+
     private UserService userService;
     @PostMapping("/login")
     public ResponseEntity<ResponseDTO> login(@Validated @RequestBody LoginDTO user){

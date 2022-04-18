@@ -1,4 +1,4 @@
-package com.example.elite.services_implement;
+package com.example.elite.services.implement;
 
 import com.example.elite.dto.ProductDTO;
 import com.example.elite.entities.Category;
@@ -8,7 +8,6 @@ import com.example.elite.repository.ProductRepository;
 import com.example.elite.services.ProductService;
 import lombok.*;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
