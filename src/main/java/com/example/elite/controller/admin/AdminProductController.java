@@ -24,17 +24,9 @@ public class AdminProductController {
     public ResponseEntity<ResponseDTO> updateProduct(@Valid @RequestBody ProductDTO dto, @PathVariable(name="id")  Long id){
         ResponseDTO responseDTO = new ResponseDTO();
         boolean check = productService.updateProduct(dto,id);
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-        if(check){
-            responseDTO.setSuccessCode("UPDATE PRODUCT SUCCESSFULLY!");
+            responseDTO.setSuccessMessage("UPDATE PRODUCT SUCCESSFULLY!");
             responseDTO.setData(true);
-            status = HttpStatus.OK;
-        }
-        else {
-            responseDTO.setErrorCode("UPDATE PRODUCT FAILED!");
-            responseDTO.setData(false);
-        }
-        return ResponseEntity.status(status).body(responseDTO);
+        return ResponseEntity.ok().body(responseDTO);
     }
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
@@ -43,13 +35,9 @@ public class AdminProductController {
         boolean check = productService.deleteProduct(id);
         HttpStatus status = HttpStatus.BAD_REQUEST;
         if(check){
-            responseDTO.setSuccessCode("DELETE PRODUCT SUCCESSFULLY!");
+            responseDTO.setSuccessMessage("DELETE PRODUCT SUCCESSFULLY!");
             responseDTO.setData(true);
             status = HttpStatus.OK;
-        }
-        else {
-            responseDTO.setErrorCode("DELETE PRODUCT FAILED!");
-            responseDTO.setData(false);
         }
         return ResponseEntity.status(status).body(responseDTO);
     }
@@ -60,13 +48,9 @@ public class AdminProductController {
         boolean check = productService.addProduct(dto);
         HttpStatus status = HttpStatus.BAD_REQUEST;
         if(check){
-            responseDTO.setSuccessCode("ADD PRODUCT SUCCESSFULLY!");
+            responseDTO.setSuccessMessage("ADD PRODUCT SUCCESSFULLY!");
             responseDTO.setData(true);
             status = HttpStatus.OK;
-        }
-        else {
-            responseDTO.setErrorCode("ADD PRODUCT FAILED!");
-            responseDTO.setData(false);
         }
         return ResponseEntity.status(status).body(responseDTO);
     }

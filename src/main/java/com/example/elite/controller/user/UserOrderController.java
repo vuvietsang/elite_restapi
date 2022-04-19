@@ -21,29 +21,17 @@ public class UserOrderController {
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<ResponseDTO> checkout(@Validated @RequestBody OrderDetailDTO[] orderDetails) {
         ResponseDTO response = new ResponseDTO();
-        try {
             response.setData(this.service.checkout(orderDetails));
-            response.setSuccessCode("ORDER SUCCESSFULLY");
+            response.setSuccessMessage("ORDER SUCCESSFULLY");
             return ResponseEntity.ok().body(response);
-        } catch (Exception e) {
-            response.setErrorCode("ORDER FAILED");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
     }
 
     @GetMapping("/myorder/{id}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<ResponseDTO> getOrderByUserId(@PathVariable("id") int userId,@RequestParam int pageNum, @RequestParam int pageSize){
         ResponseDTO response = new ResponseDTO();
-        try {
             response.setData(service.getOrderByUserId(pageNum,pageSize,userId));
-            response.setSuccessCode("GET ORDERS SUCCESSFULLY");
+            response.setSuccessMessage("GET ORDERS SUCCESSFULLY");
             return ResponseEntity.ok().body(response);
-        }
-        catch (Exception e){
-            e.printStackTrace();
-            response.setErrorCode("GET ORDERS FAILED");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
     }
 }

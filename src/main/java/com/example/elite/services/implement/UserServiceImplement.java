@@ -5,6 +5,10 @@ import com.example.elite.dto.LoginResponseDTO;
 import com.example.elite.dto.UserDTO;
 import com.example.elite.entities.Role;
 import com.example.elite.entities.User;
+import com.example.elite.handle_exception.UserDisableException;
+import com.example.elite.handle_exception.UserNameExistException;
+import com.example.elite.handle_exception.UserNotFoundException;
+import com.example.elite.handle_exception.UsernameOrPasswordNotFoundException;
 import com.example.elite.jwt.JwtConfig;
 import com.example.elite.repository.RoleRepository;
 import com.example.elite.repository.UserRepository;
@@ -21,13 +25,18 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
+import javax.management.relation.RoleNotFoundException;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true)
 @Service
@@ -39,85 +48,79 @@ public class UserServiceImplement implements UserService {
     private AuthenticationManager authenticationManager;
     private RoleRepository roleRepository;
 
-
-
     @Override
     public User findByUserName(String username) {
         return userRepository.findUserByUsername(username);
     }
-
     @Override
-    public LoginResponseDTO login(LoginDTO user) throws BadCredentialsException {
+    public LoginResponseDTO login(LoginDTO user) throws AuthenticationException {
         Authentication authentication = new UsernamePasswordAuthenticationToken(user.getUsername(),user.getPassword());
         LoginResponseDTO loginResponseDTO =null;
-            Authentication authenticate = authenticationManager.authenticate(authentication);
+        Authentication authenticate = authenticationManager.authenticate(authentication);
             if(authenticate.isAuthenticated()){
                 User userAuthenticated = userRepository.findUserByUsername(user.getUsername());
-                String token2 = Utils.buildJWT(authenticate,userAuthenticated,secretKey,jwtConfig);
+                if(!userAuthenticated.isStatus()){
+                    throw new UserDisableException("THIS USER IS NOT AVAILABLE AT THIS TIME");
+                }
+                String token = Utils.buildJWT(authenticate,userAuthenticated,secretKey,jwtConfig);
                 loginResponseDTO = LoginResponseDTO.builder()
                         .userId(userAuthenticated.getId())
                         .fullName(userAuthenticated.getFullName())
                         .username(userAuthenticated.getUsername())
                         .email(userAuthenticated.getEmail())
                         .roleName(userAuthenticated.getRole().getRoleName())
-                        .token(jwtConfig.getTokenPrefix()+token2).build();
+                        .token(jwtConfig.getTokenPrefix()+token).build();
             }
         return loginResponseDTO;
     }
     @Override
-    public LoginResponseDTO register(User user) throws Exception {
+    public LoginResponseDTO register(User user) throws UsernameNotFoundException, RoleNotFoundException {
         LoginResponseDTO loginResponseDTO =null;
         User checkUser = userRepository.findUserByUsername(user.getUsername());
         Role role =roleRepository.findByRoleName("USER");
-        if(role==null) return null;
+        if(role==null){
+            throw new RoleNotFoundException("ROLE NOT FOUND!");
+        }
+        if(checkUser!=null){
+            throw new UserNameExistException("THIS USERNAME ALREADY EXISTED!");
+        }
         if(checkUser==null){
             User userTmp = User.builder().username(user.getUsername()).email(user.getEmail()).fullName(user.getFullName()).role(role).phone(user.getPhone())
                             .password(passwordEncoder.encode(user.getPassword())).status(true).createDate(LocalDate.now()).build();
-           try {
-               userRepository.save(userTmp);
-           }
-           catch (Exception e){
-               throw new Exception();
-           }
+            userRepository.save(userTmp);
             LoginDTO loginDTO = new LoginDTO(user.getUsername(),user.getPassword());
             loginResponseDTO = login(loginDTO);
         }
         return loginResponseDTO;
     }
     @Override
-    public boolean deleteUserById(int userId) {
-        User user = userRepository.getById(userId);
-        if(user==null){
-            throw new UsernameNotFoundException("USER_NOT_FOUND");
+    public boolean deleteUserById(int userId) throws NoSuchElementException {
+        Optional<User> user;
+            user = userRepository.findById(userId);
+        user.get().setStatus(false);
+        userRepository.save(user.get());
+        return true;
+    }
+    @Override
+    public boolean addUser(User user) {
+        User userTmp = userRepository.findUserByUsername(user.getUsername());
+        if(userTmp!=null){
+            throw new UserNameExistException("THIS USERNAME ALREADY EXISTED!");
         }
-        user.setStatus(false);
+        user.setStatus(true);
+        user.setCreateDate(LocalDate.now());
+        user.setRole(Role.builder().id(1).roleName("USER").build());
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         return true;
     }
 
     @Override
-    public boolean addUser(User user) {
-        User userTmp = userRepository.findUserByUsername(user.getUsername());
-        if(userTmp==null){
-            user.setStatus(true);
-            user.setCreateDate(LocalDate.now());
-            user.setRole(Role.builder().id(1).roleName("USER").build());
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-            userRepository.save(user);
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean updateUser(User user, int id) {
-        User userTmp = userRepository.getById(id);
-        if(userTmp==null){
-            throw new UsernameNotFoundException("USER_NOT_FOUND");
-        }
-        userTmp.setFullName(user.getFullName());
-        userTmp.setEmail(user.getEmail());
-        userRepository.save(userTmp);
+    public boolean updateUser(User user, int id) throws NoSuchElementException {
+        Optional<User> userTmp = userRepository.findById(id);
+        userTmp.get().setFullName(user.getFullName());
+        userTmp.get().setEmail(user.getEmail());
+        userRepository.save(userTmp.get());
         return true;
     }
 

@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.management.relation.RoleNotFoundException;
+
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("user")
@@ -24,38 +26,18 @@ public class UserController {
     public ResponseEntity<ResponseDTO> login(@Validated @RequestBody LoginDTO user){
         ResponseDTO responseDTO = new ResponseDTO();
         LoginResponseDTO loginResponseDTO=null;
-        try {
-             loginResponseDTO = userService.login(user);
-        }catch (Exception ex){
-            responseDTO.setErrorCode("WRONG USER NAME OR PASSWORD!");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
-        }
-        if(loginResponseDTO==null){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
-        }
-        else{
+        loginResponseDTO = userService.login(user);
         responseDTO.setData(loginResponseDTO);
-        responseDTO.setSuccessCode("LOGIN_SUCCESS");
+        responseDTO.setSuccessMessage("LOGIN_SUCCESS");
         return ResponseEntity.ok().body(responseDTO);
-        }
     }
     @PostMapping("/register")
-    public ResponseEntity<ResponseDTO> register(@Validated @RequestBody User user){
+    public ResponseEntity<ResponseDTO> register(@Validated @RequestBody User user) throws RoleNotFoundException {
         ResponseDTO responseDTO = new ResponseDTO();
         LoginResponseDTO loginResponseDTO = null;
-        try {
             loginResponseDTO = userService.register(user);
-        } catch (Exception e) {
-            responseDTO.setErrorCode(e.getMessage());
-        }
-        if(loginResponseDTO==null){
-            responseDTO.setErrorCode("This username already existed!");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
-        }
-        else{
             responseDTO.setData(loginResponseDTO);
-            responseDTO.setSuccessCode("REGISTER_SUCCESS");
+            responseDTO.setSuccessMessage("REGISTER_SUCCESS");
             return ResponseEntity.ok().body(responseDTO);
         }
-    }
 }

@@ -6,6 +6,7 @@ import com.example.elite.entities.OrderDetail;
 import com.example.elite.entities.Orders;
 import com.example.elite.entities.Product;
 import com.example.elite.entities.User;
+import com.example.elite.handle_exception.OrderNotFoundException;
 import com.example.elite.repository.OrderDetailsRepository;
 import com.example.elite.repository.OrderRepository;
 import com.example.elite.repository.ProductRepository;
@@ -23,6 +24,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -35,22 +37,17 @@ public class OrderServiceImplement implements OrderSevice {
     ModelMapper modelMapper = new ModelMapper();
 
     @Override
-    public OrderDTO getOrder(int orderId) {
+    public OrderDTO getOrder(int orderId) throws NoSuchElementException {
         Orders orders = orderRepository.getById(orderId);
         OrderDTO orderDTO = modelMapper.map(orders,OrderDTO.class);
         return orderDTO;
     }
 
     @Override
-    public boolean deleteOrder(int orderId) {
+    public boolean deleteOrder(int orderId) throws NoSuchElementException {
         Orders orders = orderRepository.getById(orderId);
-        if(orders!=null){
             orders.setStatus(false);
             return true;
-        }
-        else{
-            return false;
-        }
     }
 
     @Override
@@ -82,7 +79,7 @@ public class OrderServiceImplement implements OrderSevice {
     }
 
     @Override
-    public boolean confirmOrder(int orderId) {
+    public boolean confirmOrder(int orderId) throws NoSuchElementException  {
         Orders orders = orderRepository.getById(orderId);
         if(orders!=null){
             orders.setStatus(true);
@@ -90,7 +87,7 @@ public class OrderServiceImplement implements OrderSevice {
             return true;
         }
         else{
-            return false;
+            throw new OrderNotFoundException("ORDER ID NOT FOUND!");
         }
     }
 

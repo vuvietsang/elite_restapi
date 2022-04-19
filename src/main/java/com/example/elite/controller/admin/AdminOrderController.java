@@ -19,14 +19,9 @@ public class AdminOrderController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResponseDTO> deleteOrder(@PathVariable("id") int orderId) {
         ResponseDTO response = new ResponseDTO();
-        try {
             response.setData(this.service.deleteOrder(orderId));
-            response.setSuccessCode("DELETE SUCCESSFULLY");
+            response.setSuccessMessage("DELETE SUCCESSFULLY");
             return ResponseEntity.ok().body(response);
-        } catch (Exception e) {
-            response.setErrorCode("DELETE FAILED");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
     }
 
     @GetMapping("/orders")
@@ -35,10 +30,10 @@ public class AdminOrderController {
         ResponseDTO response = new ResponseDTO();
         try {
             response.setData(this.service.getAllOrders(pageNum, pageSize));
-            response.setSuccessCode("GET ALL ORDERS SUCCESSFULLY");
+            response.setSuccessMessage("GET ALL ORDERS SUCCESSFULLY");
             return ResponseEntity.ok().body(response);
         } catch (Exception e) {
-            response.setErrorCode("GET ALL ORDERS FAILED");
+            response.setErrorMessage("GET ALL ORDERS FAILED");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
@@ -47,44 +42,25 @@ public class AdminOrderController {
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<ResponseDTO> confirmOrder(@PathVariable("id") int orderId) {
         ResponseDTO response = new ResponseDTO();
-        try {
             response.setData(this.service.confirmOrder(orderId));
-            response.setSuccessCode("CONFIRM ORDER SUCCESSFULLY");
+            response.setSuccessMessage("CONFIRM ORDER SUCCESSFULLY");
             return ResponseEntity.ok().body(response);
-        } catch (Exception e) {
-            response.setErrorCode("CONFIRM ORDER FAILED");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
     }
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public ResponseEntity<ResponseDTO> getOrderById(@PathVariable("id") int orderId){
         ResponseDTO response = new ResponseDTO();
-        try {
             response.setData(service.getOrder(orderId));
-            response.setSuccessCode("GET ORDER SUCCESSFULLY");
+            response.setSuccessMessage("GET ORDER SUCCESSFULLY");
             return ResponseEntity.ok().body(response);
-        }
-        catch (Exception e){
-            e.printStackTrace();
-            response.setErrorCode("GET ORDER FAILED!");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
     }
     @GetMapping("/email/{email}")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<ResponseDTO> getOrderByEmail(@PathVariable("email") String email,@RequestParam int pageNum,@RequestParam int pageSize){
         ResponseDTO response = new ResponseDTO();
-        try {
             response.setData(service.getOrdersByEmail(pageNum, pageSize, email));
-            response.setSuccessCode("GET ORDERS SUCCESSFULLY");
+            response.setSuccessMessage("GET ORDERS SUCCESSFULLY");
             return ResponseEntity.ok().body(response);
-        }
-        catch (Exception e){
-            e.printStackTrace();
-            response.setErrorCode("GET ORDERS FAILED");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
     }
 
 }

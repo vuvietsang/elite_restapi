@@ -28,27 +28,19 @@ public class AdminUserController {
         ResponseDTO responseDTO = new ResponseDTO();
         boolean check = userService.deleteUserById(Integer.parseInt(userId));
         if(check){
-            responseDTO.setSuccessCode("DELETE SUCCESSFULLY");
-            return ResponseEntity.ok().body(responseDTO);
+            responseDTO.setSuccessMessage("DELETE SUCCESSFULLY");
         }
-        else  {
-            responseDTO.setErrorCode("DELETE FAIL");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
-        }
+        return ResponseEntity.ok().body(responseDTO);
     }
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add")
     public ResponseEntity<ResponseDTO> add(@Validated @RequestBody User user){
         ResponseDTO responseDTO = new ResponseDTO();
         boolean check = userService.addUser(user);
-        if(check){
-            responseDTO.setSuccessCode("ADD SUCCESSFULLY");
-            return ResponseEntity.ok().body(responseDTO);
+        if(check) {
+            responseDTO.setSuccessMessage("ADD SUCCESSFULLY");
         }
-        else  {
-            responseDTO.setErrorCode("ADD FAIL");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
-        }
+        return ResponseEntity.ok().body(responseDTO);
     }
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/update/{id}")
@@ -56,11 +48,11 @@ public class AdminUserController {
         ResponseDTO responseDTO = new ResponseDTO();
         boolean check = userService.updateUser(user,id);
         if(check){
-            responseDTO.setSuccessCode("UPDATE SUCCESSFULLY");
+            responseDTO.setSuccessMessage("UPDATE SUCCESSFULLY");
             return ResponseEntity.ok().body(responseDTO);
         }
         else  {
-            responseDTO.setErrorCode("UPDATE FAIL");
+            responseDTO.setErrorMessage("UPDATE FAIL");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
         }
     }
@@ -72,11 +64,11 @@ public class AdminUserController {
         Page<UserDTO> users = userService.getAllUser(pageNum,pageSize);
         if(users!=null){
             responseDTO.setData(users);
-            responseDTO.setSuccessCode("GET ALL SUCCESSFULLY");
+            responseDTO.setSuccessMessage("GET ALL SUCCESSFULLY");
             return ResponseEntity.ok().body(responseDTO);
         }
         else  {
-            responseDTO.setErrorCode("GET ALL FAIL");
+            responseDTO.setErrorMessage("GET ALL FAIL");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
         }
     }

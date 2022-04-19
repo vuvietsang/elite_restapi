@@ -41,16 +41,16 @@ public class UserProductController {
             Specification<Product> spec = builder.build();
             Page<ProductDTO> page = productService.getAllProducts(spec,  pageable);
             if(page.isEmpty()){
-                responseDTO.setSuccessCode("NO PRODUCTS!");
+                responseDTO.setSuccessMessage("NO PRODUCTS!");
             }
             else {
                 responseDTO.setData(page);
-                responseDTO.setSuccessCode("GET ALL PRODUCTS SUCCESSFULLY");
+                responseDTO.setSuccessMessage("GET ALL PRODUCTS SUCCESSFULLY");
                 return ResponseEntity.ok().body(responseDTO);
             }
         }
         catch (Exception e){
-            responseDTO.setErrorCode(e.getMessage());
+            responseDTO.setErrorMessage(e.getMessage());
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
     }
