@@ -20,7 +20,6 @@ import javax.management.relation.RoleNotFoundException;
 @FieldDefaults(makeFinal = true)
 @RequiredArgsConstructor
 public class UserController {
-
     private UserService userService;
     @PostMapping("/login")
     public ResponseEntity<ResponseDTO> login(@Validated @RequestBody LoginDTO user){

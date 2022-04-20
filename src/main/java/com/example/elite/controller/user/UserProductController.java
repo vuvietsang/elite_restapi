@@ -54,4 +54,11 @@ public class UserProductController {
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
     }
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseDTO> getProductById(@PathVariable(value = "id") Long id){
+        ResponseDTO responseDTO = new ResponseDTO();
+        responseDTO.setData(productService.getProductById(id));
+        responseDTO.setSuccessMessage("GET PRODUCT SUCCESSFULLY!");
+        return ResponseEntity.ok().body(responseDTO);
+    }
 }

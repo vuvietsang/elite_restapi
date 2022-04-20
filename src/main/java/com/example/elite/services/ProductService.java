@@ -12,4 +12,6 @@ public interface ProductService {
     public boolean addProduct(ProductDTO dto);
     public boolean updateProduct(ProductDTO dto,Long productId);
     public boolean deleteProduct(Long productId);
+
+    public ProductDTO getProductById(Long id);
 }

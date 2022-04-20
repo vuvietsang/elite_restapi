@@ -5,7 +5,6 @@ import com.example.elite.entities.Category;
 import com.example.elite.entities.Product;
 import com.example.elite.handle_exception.CategoryNotFoundException;
 import com.example.elite.handle_exception.ProductNameExistException;
-import com.example.elite.handle_exception.ProductNotFoundException;
 import com.example.elite.repository.CategoryRepository;
 import com.example.elite.repository.ProductRepository;
 import com.example.elite.services.ProductService;
@@ -73,5 +72,13 @@ public class ProductServiceImplement implements ProductService {
         Optional<Product> product = productRepository.findById(productId);
         product.get().setStatus(false);
         return true;
+    }
+
+    @Override
+    public ProductDTO getProductById(Long id) throws NoSuchElementException {
+        Optional<Product> product = productRepository.findById(id);
+        ModelMapper  modelMapper = new ModelMapper();
+        ProductDTO productDTO = modelMapper.map(product.get(),ProductDTO.class);
+        return productDTO;
     }
 }
