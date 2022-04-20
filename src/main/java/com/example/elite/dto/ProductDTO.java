@@ -27,6 +27,7 @@ public class ProductDTO {
     private String description;
     @Min(100)
     private double price;
+    private boolean status;
     @NotBlank(message = "Image can not be empty")
     private String image;
     private LocalDate createDate;

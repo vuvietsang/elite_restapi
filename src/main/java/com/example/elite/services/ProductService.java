@@ -10,8 +10,8 @@ import org.springframework.data.jpa.domain.Specification;
 public interface ProductService {
     public Page<ProductDTO> getAllProducts(Specification<Product> specification, Pageable pageable);
     public ProductDTO addProduct(ProductDTO dto);
-    public boolean updateProduct(ProductDTO dto,Long productId);
-    public boolean deleteProduct(Long productId);
+    public ProductDTO updateProduct(ProductDTO dto,Long productId);
+    public ProductDTO deleteProduct(Long productId);
 
     public ProductDTO getProductById(Long id);
 }

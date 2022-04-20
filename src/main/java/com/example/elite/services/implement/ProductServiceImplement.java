@@ -23,30 +23,30 @@ import java.util.Optional;
 
 @Service
 public class ProductServiceImplement implements ProductService {
-    @Autowired
+     @Autowired
      private ProductRepository productRepository;
-    @Autowired
+     @Autowired
      private CategoryRepository categoryRepository;
 
     @Override
     public Page<ProductDTO> getAllProducts(Specification<Product> specification, Pageable pageable) {
         ModelMapper modelMapper = new ModelMapper();
         Page<Product> pageProduct = productRepository.findAll(specification,pageable);
-        Page<ProductDTO> pageUserDTO = pageProduct.map(product->modelMapper.map(product,ProductDTO.class));
-        return pageUserDTO;
+        Page<ProductDTO> pageProductDTO = pageProduct.map(product->modelMapper.map(product,ProductDTO.class));
+        return pageProductDTO;
     }
 
     @Override
     public ProductDTO addProduct(ProductDTO dto) {
-        Product product = productRepository.findByName(dto.getName());
+        Product productExist = productRepository.findByName(dto.getName());
         Category category =categoryRepository.findByName(dto.getCategoryName());
         if(category==null){
             throw new CategoryNotFoundException("CATEGORY NOT FOUND!");
         }
-        if(product!=null){
+        if(productExist!=null){
             throw new ProductNameExistException("THIS PRODUCT NAME EXISTED!");
         }
-        Product product1 = Product.builder()
+        Product product = Product.builder()
                 .category(category)
                 .createDate(LocalDate.now())
                 .description(dto.getDescription())
@@ -56,12 +56,13 @@ public class ProductServiceImplement implements ProductService {
                 .quantity(dto.getQuantity())
                 .name(dto.getName()).build();
         ModelMapper modelMapper = new ModelMapper();
-        return modelMapper.map(productRepository.save(product1),ProductDTO.class);
+        return modelMapper.map(productRepository.save(product),ProductDTO.class);
     }
 
     @Override
-    public boolean updateProduct(ProductDTO dto, Long productId) throws NoSuchElementException {
+    public ProductDTO updateProduct(ProductDTO dto, Long productId) throws NoSuchElementException {
         Optional<Product> product = productRepository.findById(productId);
+
         Category category =categoryRepository.findByName(dto.getCategoryName());
         if(category==null){
             throw new CategoryNotFoundException("THIS CATEGORY NAME NOT FOUND!");
@@ -74,14 +75,16 @@ public class ProductServiceImplement implements ProductService {
         product.get().setPrice(dto.getPrice());
         product.get().setQuantity(dto.getQuantity());
         productRepository.save(product.get());
-        return true;
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper.map(product,ProductDTO.class);
     }
 
     @Override
-    public boolean deleteProduct(Long productId)  throws NoSuchElementException {
+    public ProductDTO deleteProduct(Long productId)  throws NoSuchElementException {
         Optional<Product> product = productRepository.findById(productId);
         product.get().setStatus(false);
-        return true;
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper.map(productRepository.save(product.get()),ProductDTO.class) ;
     }
 
     @Override

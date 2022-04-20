@@ -24,18 +24,18 @@ public class AdminProductController {
     @PostMapping("/{id}")
     public ResponseEntity<ResponseDTO> updateProduct(@Valid @RequestBody ProductDTO dto, @PathVariable(name="id")  Long id){
         ResponseDTO responseDTO = new ResponseDTO();
-        boolean check = productService.updateProduct(dto,id);
+        ProductDTO dtoReturn = productService.updateProduct(dto,id);
             responseDTO.setSuccessMessage("UPDATE PRODUCT SUCCESSFULLY!");
-            responseDTO.setData(true);
+            responseDTO.setData(dtoReturn);
         return ResponseEntity.ok().body(responseDTO);
     }
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<ResponseDTO> deleteProduct(@PathVariable(name="id")  Long id){
         ResponseDTO responseDTO = new ResponseDTO();
-        boolean check = productService.deleteProduct(id);
+        ProductDTO check = productService.deleteProduct(id);
         HttpStatus status = HttpStatus.BAD_REQUEST;
-        if(check){
+        if(check!=null){
             responseDTO.setSuccessMessage("DELETE PRODUCT SUCCESSFULLY!");
             responseDTO.setData(true);
             status = HttpStatus.OK;
