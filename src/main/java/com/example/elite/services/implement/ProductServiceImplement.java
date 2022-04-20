@@ -10,20 +10,23 @@ import com.example.elite.repository.ProductRepository;
 import com.example.elite.services.ProductService;
 import lombok.*;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 
 import java.time.LocalDate;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class ProductServiceImplement implements ProductService {
-    private final ProductRepository productRepository;
-    private final CategoryRepository categoryRepository;
+    @Autowired
+     private ProductRepository productRepository;
+    @Autowired
+     private CategoryRepository categoryRepository;
 
     @Override
     public Page<ProductDTO> getAllProducts(Specification<Product> specification, Pageable pageable) {
@@ -34,7 +37,7 @@ public class ProductServiceImplement implements ProductService {
     }
 
     @Override
-    public boolean addProduct(ProductDTO dto) {
+    public ProductDTO addProduct(ProductDTO dto) {
         Product product = productRepository.findByName(dto.getName());
         Category category =categoryRepository.findByName(dto.getCategoryName());
         if(category==null){
@@ -43,10 +46,17 @@ public class ProductServiceImplement implements ProductService {
         if(product!=null){
             throw new ProductNameExistException("THIS PRODUCT NAME EXISTED!");
         }
-        product = Product.builder().category(category).createDate(LocalDate.now()).description(dto.getDescription()).image(dto.getImage())
-                .price(dto.getPrice()).status(true).image(dto.getImage()).quantity(dto.getQuantity()).name(dto.getName()).build();
-        productRepository.save(product);
-        return true;
+        Product product1 = Product.builder()
+                .category(category)
+                .createDate(LocalDate.now())
+                .description(dto.getDescription())
+                .image(dto.getImage())
+                .price(dto.getPrice())
+                .status(true)
+                .quantity(dto.getQuantity())
+                .name(dto.getName()).build();
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper.map(productRepository.save(product1),ProductDTO.class);
     }
 
     @Override

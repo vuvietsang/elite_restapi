@@ -2,6 +2,7 @@ package com.example.elite.controller.admin;
 
 import com.example.elite.dto.ProductDTO;
 import com.example.elite.dto.ResponseDTO;
+import com.example.elite.entities.Product;
 import com.example.elite.services.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -45,13 +46,11 @@ public class AdminProductController {
     @PostMapping
     public ResponseEntity<ResponseDTO> addNewProduct(@Validated @RequestBody ProductDTO dto){
         ResponseDTO responseDTO = new ResponseDTO();
-        boolean check = productService.addProduct(dto);
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-        if(check){
+        ProductDTO dtoTMp = productService.addProduct(dto);
+        if(dtoTMp!=null){
             responseDTO.setSuccessMessage("ADD PRODUCT SUCCESSFULLY!");
-            responseDTO.setData(true);
-            status = HttpStatus.OK;
+            responseDTO.setData(dtoTMp);
         }
-        return ResponseEntity.status(status).body(responseDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }
 }
