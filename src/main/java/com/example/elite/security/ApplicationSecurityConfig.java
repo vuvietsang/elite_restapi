@@ -65,6 +65,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
+
     @Bean
     public javax.crypto.SecretKey getSecretKey() {
         return Keys.hmacShaKeyFor(jwtConfig.getSecretKey().getBytes());

@@ -7,22 +7,17 @@ import com.example.elite.entities.Role;
 import com.example.elite.entities.User;
 import com.example.elite.handle_exception.UserDisableException;
 import com.example.elite.handle_exception.UserNameExistException;
-import com.example.elite.handle_exception.UserNotFoundException;
-import com.example.elite.handle_exception.UsernameOrPasswordNotFoundException;
 import com.example.elite.jwt.JwtConfig;
 import com.example.elite.repository.RoleRepository;
 import com.example.elite.repository.UserRepository;
 import com.example.elite.services.UserService;
 import com.example.elite.utils.Utils;
-import io.jsonwebtoken.Jwts;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -33,21 +28,23 @@ import org.springframework.stereotype.Service;
 import javax.crypto.SecretKey;
 import javax.management.relation.RoleNotFoundException;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-@RequiredArgsConstructor
-@FieldDefaults(makeFinal = true)
 @Service
 public class UserServiceImplement implements UserService {
+    @Autowired
     private UserRepository userRepository;
+    @Autowired
     private SecretKey secretKey;
+    @Autowired
     private JwtConfig jwtConfig;
+    @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
     private AuthenticationManager authenticationManager;
+    @Autowired
     private RoleRepository roleRepository;
-
     @Override
     public User findByUserName(String username) {
         return userRepository.findUserByUsername(username);

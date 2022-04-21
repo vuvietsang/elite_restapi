@@ -7,14 +7,10 @@ import com.example.elite.filter.ProductSpecificationBuilder;
 import com.example.elite.repository.CategoryRepository;
 import com.example.elite.repository.ProductRepository;
 import com.example.elite.services.ProductService;
-import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -32,7 +28,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
 class ProductServiceImplementTest {
@@ -75,7 +72,11 @@ class ProductServiceImplementTest {
     @Test
     void addProduct() {
         //given
-        Category category = Category.builder().id(123).name("HIHI").description("thom ngon moi an nha toi day khong cho ban nua gio toi an lien").build();
+        Category category = Category.builder()
+                .id(123)
+                .name("HIHI")
+                .description("thom ngon moi an nha toi day khong cho ban nua gio toi an lien")
+                .build();
         Product product = Product.builder()
                 .name("Apple")
                 .createDate(LocalDate.now())
@@ -85,14 +86,13 @@ class ProductServiceImplementTest {
                 .quantity(100)
                 .description("yummy")
                 .status(true).build();
+
         ModelMapper modelMapper = new ModelMapper();
         ProductDTO productDTO = modelMapper.map(product,ProductDTO.class);
         Mockito.when(productRepository.findByName("Apple")).thenReturn(null);
         Mockito.when(categoryRepository.findByName("HIHI")).thenReturn(category);
         Mockito.when(productRepository.save(product)).thenReturn(product);
-
-        assertNotNull(productService);
-       Assertions.assertEquals(modelMapper.map(productService.addProduct(productDTO),ProductDTO.class) , productDTO);
+        Assertions.assertEquals(productService.addProduct(productDTO), productDTO);
     }
 
     @Test
@@ -111,11 +111,8 @@ class ProductServiceImplementTest {
         Mockito.when(productRepository.findById(1L)).thenReturn(product);
         Mockito.when(categoryRepository.findByName(productDTO.getCategoryName())).thenReturn(category);
         Mockito.when(productRepository.save(product.get())).thenReturn(product.get());
-
-
         Assertions.assertEquals(productService.updateProduct(productDTO,1L),productDTO);
     }
-
     @Test
     void deleteProduct() {
         Optional<Product> product = Optional.of(new Product());
@@ -130,6 +127,4 @@ class ProductServiceImplementTest {
         Assertions.assertEquals(productService.deleteProduct(1L) ,dto);
         Assertions.assertFalse(productService.deleteProduct(1L).isStatus() );
     }
-
-
 }
