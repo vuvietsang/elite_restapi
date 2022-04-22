@@ -14,6 +14,7 @@ import java.time.LocalDate;
 public class OrderDTO {
     private int id;
     private boolean status;
+    private boolean isConfirmed;
     private LocalDate createDate;
     private double totalPrice;
     private int userId;

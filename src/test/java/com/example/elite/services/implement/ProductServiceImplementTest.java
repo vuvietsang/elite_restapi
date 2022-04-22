@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
+import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
 class ProductServiceImplementTest {
@@ -40,21 +39,19 @@ class ProductServiceImplementTest {
 
     @Autowired
     private ProductService productService ;
-    @Mock
     private Pageable pageable;
-
+    @InjectMocks
     private ModelMapper modelMapper;
     @BeforeEach
     void setUp(){
-        modelMapper = new ModelMapper();
         pageable = PageRequest.of(0,10);
     }
 
     @Test
     void getProductById() {
-        Optional<Product> product = Optional.of(new Product());
+        Optional<Product> product = Optional.of(Product.builder().id(1L).build());
         Mockito.when(productRepository.findById(1L)).thenReturn(product);
-        assertEquals(productService.getProductById(1L) , modelMapper.map(product,ProductDTO.class));
+        assertEquals(productService.getProductById(1L), modelMapper.map(product.get(), ProductDTO.class));
     }
 
     @Test

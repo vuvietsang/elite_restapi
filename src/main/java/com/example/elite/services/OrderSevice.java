@@ -9,15 +9,15 @@ import org.springframework.data.domain.Page;
 
 
 public interface OrderSevice {
-    OrderDTO getOrder(int orderId);
+    OrderDTO getOrderById(int orderId);
 
-    boolean deleteOrder(int orderId);
+    OrderDTO deleteOrder(int orderId);
 
-    boolean updateOrder(Orders order, int orderId);
+    OrderDTO updateOrder(Orders order, int orderId);
 
-    boolean checkout(OrderDetailDTO[] orderDetails);
+    OrderDTO checkout(OrderDetailDTO[] orderDetails);
 
-    boolean confirmOrder(int orderId);
+    OrderDTO confirmOrder(int orderId);
 
     Page<OrderDTO> getAllOrders(int pageNum, int pageSize);
 

@@ -45,16 +45,21 @@ public class UserServiceImplement implements UserService {
     private AuthenticationManager authenticationManager;
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private ModelMapper modelMapper;
+
     @Override
     public User findByUserName(String username) {
         return userRepository.findUserByUsername(username);
     }
+
     @Override
     public LoginResponseDTO login(LoginDTO user) throws AuthenticationException {
-        Authentication authentication = new UsernamePasswordAuthenticationToken(user.getUsername(),user.getPassword());
-        LoginResponseDTO loginResponseDTO =null;
+        Authentication authentication = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
+        LoginResponseDTO loginResponseDTO = null;
         Authentication authenticate = authenticationManager.authenticate(authentication);
-            if(authenticate.isAuthenticated()){
+        if (authenticate.isAuthenticated()) {
                 User userAuthenticated = userRepository.findUserByUsername(user.getUsername());
                 if(!userAuthenticated.isStatus()){
                     throw new UserDisableException("THIS USER IS NOT AVAILABLE AT THIS TIME");
@@ -81,50 +86,50 @@ public class UserServiceImplement implements UserService {
         if(checkUser!=null){
             throw new UserNameExistException("THIS USERNAME ALREADY EXISTED!");
         }
-        if(checkUser==null){
+        if (checkUser == null) {
             User userTmp = User.builder().username(user.getUsername()).email(user.getEmail()).fullName(user.getFullName()).role(role).phone(user.getPhone())
-                            .password(passwordEncoder.encode(user.getPassword())).status(true).createDate(LocalDate.now()).build();
+                    .password(passwordEncoder.encode(user.getPassword())).status(true).createDate(LocalDate.now()).build();
             userRepository.save(userTmp);
-            LoginDTO loginDTO = new LoginDTO(user.getUsername(),user.getPassword());
+            LoginDTO loginDTO = new LoginDTO(user.getUsername(), user.getPassword());
             loginResponseDTO = login(loginDTO);
         }
         return loginResponseDTO;
     }
+
     @Override
-    public boolean deleteUserById(int userId) throws NoSuchElementException {
+    public UserDTO deleteUserById(int userId) throws NoSuchElementException {
         Optional<User> user;
-            user = userRepository.findById(userId);
+        user = userRepository.findById(userId);
         user.get().setStatus(false);
         userRepository.save(user.get());
-        return true;
+        return modelMapper.map(userRepository.save(user.get()), UserDTO.class);
     }
+
     @Override
-    public boolean addUser(User user) {
+    public UserDTO addUser(User user) {
         User userTmp = userRepository.findUserByUsername(user.getUsername());
-        if(userTmp!=null){
+        if (userTmp != null) {
             throw new UserNameExistException("THIS USERNAME ALREADY EXISTED!");
         }
         user.setStatus(true);
         user.setCreateDate(LocalDate.now());
         user.setRole(Role.builder().id(1).roleName("USER").build());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
-        return true;
+        return modelMapper.map(userRepository.save(user), UserDTO.class);
     }
 
     @Override
-    public boolean updateUser(User user, int id) throws NoSuchElementException {
+    public UserDTO updateUser(User user, int id) throws NoSuchElementException {
         Optional<User> userTmp = userRepository.findById(id);
         userTmp.get().setFullName(user.getFullName());
         userTmp.get().setEmail(user.getEmail());
-        userRepository.save(userTmp.get());
-        return true;
+        return modelMapper.map(userRepository.save(user), UserDTO.class);
     }
 
     @Override
     public Page<UserDTO> getAllUser(int pageNum, int pageSize) {
         ModelMapper modelMapper = new ModelMapper();
-        Pageable pageable = PageRequest.of(pageNum,pageSize);
+        Pageable pageable = PageRequest.of(pageNum, pageSize);
         Page<User> pageUser = userRepository.findAll(pageable);
         Page<UserDTO> pageUserDTO = pageUser.map(user->modelMapper.map(user,UserDTO.class));
         return pageUserDTO;

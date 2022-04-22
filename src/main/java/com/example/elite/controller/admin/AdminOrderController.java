@@ -50,8 +50,8 @@ public class AdminOrderController {
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public ResponseEntity<ResponseDTO> getOrderById(@PathVariable("id") int orderId){
         ResponseDTO response = new ResponseDTO();
-            response.setData(service.getOrder(orderId));
-            response.setSuccessMessage("GET ORDER SUCCESSFULLY");
+            response.setData(service.getOrderById(orderId));
+        response.setSuccessMessage("GET ORDER SUCCESSFULLY");
             return ResponseEntity.ok().body(response);
     }
     @GetMapping("/email/{email}")

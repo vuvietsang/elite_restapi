@@ -8,14 +8,12 @@ import com.example.elite.handle_exception.ProductNameExistException;
 import com.example.elite.repository.CategoryRepository;
 import com.example.elite.repository.ProductRepository;
 import com.example.elite.services.ProductService;
-import lombok.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
 
 import java.time.LocalDate;
 import java.util.NoSuchElementException;
@@ -23,16 +21,18 @@ import java.util.Optional;
 
 @Service
 public class ProductServiceImplement implements ProductService {
-     @Autowired
-     private ProductRepository productRepository;
-     @Autowired
-     private CategoryRepository categoryRepository;
+    @Autowired
+    private ProductRepository productRepository;
+    @Autowired
+    private CategoryRepository categoryRepository;
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Override
     public Page<ProductDTO> getAllProducts(Specification<Product> specification, Pageable pageable) {
         ModelMapper modelMapper = new ModelMapper();
-        Page<Product> pageProduct = productRepository.findAll(specification,pageable);
-        Page<ProductDTO> pageProductDTO = pageProduct.map(product->modelMapper.map(product,ProductDTO.class));
+        Page<Product> pageProduct = productRepository.findAll(specification, pageable);
+        Page<ProductDTO> pageProductDTO = pageProduct.map(product -> modelMapper.map(product, ProductDTO.class));
         return pageProductDTO;
     }
 
@@ -55,7 +55,6 @@ public class ProductServiceImplement implements ProductService {
                 .status(true)
                 .quantity(dto.getQuantity())
                 .name(dto.getName()).build();
-        ModelMapper modelMapper = new ModelMapper();
         return modelMapper.map(productRepository.save(product),ProductDTO.class);
     }
 
@@ -75,7 +74,6 @@ public class ProductServiceImplement implements ProductService {
         product.get().setPrice(dto.getPrice());
         product.get().setQuantity(dto.getQuantity());
         productRepository.save(product.get());
-        ModelMapper modelMapper = new ModelMapper();
         return modelMapper.map(product,ProductDTO.class);
     }
 
@@ -83,14 +81,12 @@ public class ProductServiceImplement implements ProductService {
     public ProductDTO deleteProduct(Long productId)  throws NoSuchElementException {
         Optional<Product> product = productRepository.findById(productId);
         product.get().setStatus(false);
-        ModelMapper modelMapper = new ModelMapper();
         return modelMapper.map(productRepository.save(product.get()),ProductDTO.class) ;
     }
 
     @Override
     public ProductDTO getProductById(Long id) throws NoSuchElementException {
         Optional<Product> product = productRepository.findById(id);
-        ModelMapper  modelMapper = new ModelMapper();
         ProductDTO productDTO = modelMapper.map(product.get(),ProductDTO.class);
         return productDTO;
     }
