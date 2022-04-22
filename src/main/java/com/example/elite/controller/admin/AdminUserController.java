@@ -26,32 +26,31 @@ public class AdminUserController {
     @PutMapping("/{id}")
     public ResponseEntity<ResponseDTO> delete(@PathVariable(name="id") String userId){
         ResponseDTO responseDTO = new ResponseDTO();
-        boolean check = userService.deleteUserById(Integer.parseInt(userId));
-        if(check){
+        UserDTO checkDTO = userService.deleteUserById(Integer.parseInt(userId));
+        if (checkDTO != null) {
             responseDTO.setSuccessMessage("DELETE SUCCESSFULLY");
         }
         return ResponseEntity.ok().body(responseDTO);
     }
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add")
-    public ResponseEntity<ResponseDTO> add(@Validated @RequestBody User user){
+    public ResponseEntity<ResponseDTO> add(@Validated @RequestBody User user) {
         ResponseDTO responseDTO = new ResponseDTO();
-        boolean check = userService.addUser(user);
-        if(check) {
+        UserDTO checkDTO = userService.addUser(user);
+        if (checkDTO != null) {
             responseDTO.setSuccessMessage("ADD SUCCESSFULLY");
         }
         return ResponseEntity.ok().body(responseDTO);
     }
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/update/{id}")
-    public ResponseEntity<ResponseDTO> update(@Validated @RequestBody User user, @PathVariable(name="id") int id){
+    public ResponseEntity<ResponseDTO> update(@Validated @RequestBody User user, @PathVariable(name="id") int id) {
         ResponseDTO responseDTO = new ResponseDTO();
-        boolean check = userService.updateUser(user,id);
-        if(check){
+        UserDTO checkDTO = userService.updateUser(user, id);
+        if (checkDTO != null) {
             responseDTO.setSuccessMessage("UPDATE SUCCESSFULLY");
             return ResponseEntity.ok().body(responseDTO);
-        }
-        else  {
+        } else {
             responseDTO.setErrorMessage("UPDATE FAIL");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
         }

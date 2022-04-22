@@ -18,6 +18,7 @@ public class Orders {
     @GeneratedValue
     private int id;
     private boolean status;
+    private boolean isConfirmed;
     private LocalDate createDate;
     private double totalPrice;
 
