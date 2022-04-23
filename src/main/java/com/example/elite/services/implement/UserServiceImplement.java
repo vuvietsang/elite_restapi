@@ -1,5 +1,6 @@
 package com.example.elite.services.implement;
 
+import com.example.elite.dto.AddUserDTO;
 import com.example.elite.dto.LoginDTO;
 import com.example.elite.dto.LoginResponseDTO;
 import com.example.elite.dto.UserDTO;
@@ -46,12 +47,12 @@ public class UserServiceImplement implements UserService {
     @Autowired
     private RoleRepository roleRepository;
 
-    @Autowired
-    private ModelMapper modelMapper;
+
+    private ModelMapper modelMapper = new ModelMapper();
 
     @Override
-    public User findByUserName(String username) {
-        return userRepository.findUserByUsername(username);
+    public UserDTO findByUserName(String username) {
+        return modelMapper.map(userRepository.findUserByUsername(username),UserDTO.class);
     }
 
     @Override
@@ -106,16 +107,26 @@ public class UserServiceImplement implements UserService {
     }
 
     @Override
-    public UserDTO addUser(User user) {
+    public UserDTO addUser(AddUserDTO user) {
         User userTmp = userRepository.findUserByUsername(user.getUsername());
         if (userTmp != null) {
             throw new UserNameExistException("THIS USERNAME ALREADY EXISTED!");
         }
-        user.setStatus(true);
-        user.setCreateDate(LocalDate.now());
-        user.setRole(Role.builder().id(1).roleName("USER").build());
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return modelMapper.map(userRepository.save(user), UserDTO.class);
+        Role role = roleRepository.findByRoleName(user.getRoleName());
+        if(role==null){
+            throw new com.example.elite.handle_exception.RoleNotFoundException("THIS ROLE DOES NOT EXISTED");
+        }
+        User userSave = User.builder()
+                .status(true)
+                .createDate(LocalDate.now())
+                .role(role)
+                .phone(user.getPhone())
+                .email(user.getEmail())
+                .fullName(user.getFullName())
+                .username(user.getUsername())
+                .password(passwordEncoder.encode(user.getPassword()))
+                .build();
+        return modelMapper.map(userRepository.save(userSave), UserDTO.class);
     }
 
     @Override

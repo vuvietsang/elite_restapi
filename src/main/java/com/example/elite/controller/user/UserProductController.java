@@ -30,7 +30,6 @@ public class UserProductController {
                                                      @RequestParam Integer pageSize,
                                                      @RequestParam String search){
         ResponseDTO  responseDTO = new ResponseDTO();
-        try {
             Pageable pageable = PageRequest.of(Optional.ofNullable(pageNum).orElse(0),Optional.ofNullable(pageSize).orElse(10));
             ProductSpecificationBuilder builder = new ProductSpecificationBuilder();
             Pattern pattern = Pattern.compile("(\\w+?)(:|<|>)(\\w+?),");
@@ -40,19 +39,9 @@ public class UserProductController {
             }
             Specification<Product> spec = builder.build();
             Page<ProductDTO> page = productService.getAllProducts(spec,  pageable);
-            if(page.isEmpty()){
-                responseDTO.setSuccessMessage("NO PRODUCTS!");
-            }
-            else {
-                responseDTO.setData(page);
-                responseDTO.setSuccessMessage("GET ALL PRODUCTS SUCCESSFULLY");
-                return ResponseEntity.ok().body(responseDTO);
-            }
-        }
-        catch (Exception e){
-            responseDTO.setErrorMessage(e.getMessage());
-        }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
+            responseDTO.setData(page);
+            responseDTO.setSuccessMessage("GET ALL PRODUCTS SUCCESSFULLY");
+            return ResponseEntity.ok().body(responseDTO);
     }
     @GetMapping("/{id}")
     public ResponseEntity<ResponseDTO> getProductById(@PathVariable(value = "id") Long id){

@@ -19,16 +19,10 @@ public class User {
     @Id
     @GeneratedValue
     private int id;
-    @Size(min=6,max=30)
     private String fullName;
-    @Size(min=6)
-    @Column(unique = true)
     private String username;
-    @Size(min=6)
     private String password;
-    @Email
     private String email;
-    @Size(min = 10,max = 11)
     private String phone;
     private boolean status;
     private LocalDate createDate;

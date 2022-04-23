@@ -3,12 +3,17 @@ package com.example.elite.services.implement;
 import com.example.elite.dto.OrderDTO;
 import com.example.elite.entities.Orders;
 import com.example.elite.entities.User;
+import com.example.elite.repository.OrderDetailsRepository;
 import com.example.elite.repository.OrderRepository;
+import com.example.elite.repository.ProductRepository;
+import com.example.elite.repository.UserRepository;
 import com.example.elite.services.OrderSevice;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
@@ -24,16 +29,29 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-@SpringBootTest
 @ExtendWith(MockitoExtension.class)
 class OrderServiceImplementTest {
-    @MockBean
+    @Mock
     private OrderRepository orderRepository;
-    @Autowired
-    private OrderSevice orderSevice;
+
+    @Mock
+    UserRepository userRepository;
+
+    @Mock
+    ProductRepository productRepository;
+
+    @Mock
+    OrderDetailsRepository orderDetailsRepository;
+
     @InjectMocks
+    private OrderServiceImplement orderSevice;
+
     ModelMapper modelMapper;
 
+    @BeforeEach
+    void setUp(){
+        modelMapper = new ModelMapper();
+    }
     @Test
     void getOrder() {
         User user = User.builder().id(1).build();

@@ -93,6 +93,12 @@ public class ExceptionHandlers extends RuntimeException {
         dto.setErrorMessage(exception.getMessage());
         return ResponseEntity.badRequest().body(dto);
     }
+    @ExceptionHandler(value = {com.example.elite.handle_exception.RoleNotFoundException.class})
+    public ResponseEntity<Object> roleNotFoundException(com.example.elite.handle_exception.RoleNotFoundException exception) {
+        ResponseDTO dto = new ResponseDTO();
+        dto.setErrorMessage(exception.getMessage());
+        return ResponseEntity.badRequest().body(dto);
+    }
 
 
 }

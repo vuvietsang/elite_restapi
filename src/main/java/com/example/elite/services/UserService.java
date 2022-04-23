@@ -1,5 +1,6 @@
 package com.example.elite.services;
 
+import com.example.elite.dto.AddUserDTO;
 import com.example.elite.dto.LoginDTO;
 import com.example.elite.dto.LoginResponseDTO;
 import com.example.elite.dto.UserDTO;
@@ -9,7 +10,7 @@ import org.springframework.data.domain.Page;
 import javax.management.relation.RoleNotFoundException;
 
 public interface UserService {
-    public User findByUserName(String username);
+    public UserDTO findByUserName(String username);
 
     public LoginResponseDTO login(LoginDTO user);
 
@@ -17,7 +18,7 @@ public interface UserService {
 
     public UserDTO deleteUserById(int userId);
 
-    public UserDTO addUser(User user);
+    public UserDTO addUser(AddUserDTO user);
 
     public UserDTO updateUser(User user, int id);
 

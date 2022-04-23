@@ -34,8 +34,7 @@ public class OrderServiceImplement implements OrderSevice {
     ProductRepository productRepository;
     @Autowired
     OrderDetailsRepository orderDetailsRepository;
-    @Autowired
-    private ModelMapper modelMapper;
+    private ModelMapper modelMapper = new ModelMapper();
 
     @Override
     public OrderDTO getOrderById(int orderId) throws NoSuchElementException {

@@ -1,5 +1,6 @@
 package com.example.elite.controller.admin;
 
+import com.example.elite.dto.AddUserDTO;
 import com.example.elite.dto.ResponseDTO;
 import com.example.elite.dto.UserDTO;
 import com.example.elite.entities.User;
@@ -34,7 +35,7 @@ public class AdminUserController {
     }
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add")
-    public ResponseEntity<ResponseDTO> add(@Validated @RequestBody User user) {
+    public ResponseEntity<ResponseDTO> add(@Validated @RequestBody AddUserDTO user) {
         ResponseDTO responseDTO = new ResponseDTO();
         UserDTO checkDTO = userService.addUser(user);
         if (checkDTO != null) {
@@ -57,18 +58,21 @@ public class AdminUserController {
     }
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/pageNum={num}&pageSize={size}")
-    public ResponseEntity<ResponseDTO> finAll(@PathVariable(name="num") int pageNum, @PathVariable(name="size") int pageSize){
+    public ResponseEntity<ResponseDTO> findAll(@PathVariable(name="num") int pageNum, @PathVariable(name="size") int pageSize){
         ResponseDTO responseDTO = new ResponseDTO();
-
         Page<UserDTO> users = userService.getAllUser(pageNum,pageSize);
-        if(users!=null){
             responseDTO.setData(users);
             responseDTO.setSuccessMessage("GET ALL SUCCESSFULLY");
             return ResponseEntity.ok().body(responseDTO);
-        }
-        else  {
-            responseDTO.setErrorMessage("GET ALL FAIL");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
-        }
+
+    }
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/{username}")
+    public ResponseEntity<ResponseDTO> findByUsername(@PathVariable(name="username") String username){
+        ResponseDTO responseDTO = new ResponseDTO();
+        UserDTO user = userService.findByUserName(username);
+        responseDTO.setData(user);
+        responseDTO.setSuccessMessage("GET USER SUCCESSFULLY");
+        return ResponseEntity.ok().body(responseDTO);
     }
 }

@@ -6,52 +6,54 @@ import com.example.elite.entities.Product;
 import com.example.elite.filter.ProductSpecificationBuilder;
 import com.example.elite.repository.CategoryRepository;
 import com.example.elite.repository.ProductRepository;
-import com.example.elite.services.ProductService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.ui.Model;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-@SpringBootTest
 @ExtendWith(MockitoExtension.class)
 class ProductServiceImplementTest {
-    @MockBean
+    @Mock
     private ProductRepository productRepository;
-    @MockBean
+    @Mock
     private CategoryRepository categoryRepository;
 
-    @Autowired
-    private ProductService productService ;
-    private Pageable pageable;
+
     @InjectMocks
-    private ModelMapper modelMapper;
+    private ProductServiceImplement productService ;
+
+    private Pageable pageable;
+    private ModelMapper modelMapper ;
+
     @BeforeEach
     void setUp(){
         pageable = PageRequest.of(0,10);
+        modelMapper = new ModelMapper();
     }
 
     @Test
     void getProductById() {
         Optional<Product> product = Optional.of(Product.builder().id(1L).build());
         Mockito.when(productRepository.findById(1L)).thenReturn(product);
-        assertEquals(productService.getProductById(1L), modelMapper.map(product.get(), ProductDTO.class));
+        ProductDTO productDTO = modelMapper.map(product.get(), ProductDTO.class);
+        assertEquals(productService.getProductById(1L),productDTO);
     }
 
     @Test
@@ -61,9 +63,9 @@ class ProductServiceImplementTest {
         Product product1 = new Product();
         Product product2 = new Product();
         Page<Product> productPage = new PageImpl<>(List.of(product1,product2),pageable,2);
-        Page<ProductDTO> pageProductDTO = productPage.map(product->modelMapper.map(product,ProductDTO.class));
         Mockito.when(productRepository.findAll(spec,pageable)).thenReturn(productPage);
-        Assertions.assertEquals(productService.getAllProducts(spec,pageable),pageProductDTO);
+        Page<ProductDTO> productDTOPage = productPage.map(product -> modelMapper.map(product,ProductDTO.class));
+        Assertions.assertEquals(productService.getAllProducts(spec,pageable),productDTOPage);
     }
 
     @Test
@@ -83,8 +85,6 @@ class ProductServiceImplementTest {
                 .quantity(100)
                 .description("yummy")
                 .status(true).build();
-
-        ModelMapper modelMapper = new ModelMapper();
         ProductDTO productDTO = modelMapper.map(product,ProductDTO.class);
         Mockito.when(productRepository.findByName("Apple")).thenReturn(null);
         Mockito.when(categoryRepository.findByName("HIHI")).thenReturn(category);
@@ -104,7 +104,7 @@ class ProductServiceImplementTest {
         product.get().setImage("Image");
         product.get().setName("Edited");
         product.get().setCategory(category);
-        ProductDTO productDTO = modelMapper.map(product,ProductDTO.class);
+        ProductDTO productDTO = modelMapper.map(product.get(),ProductDTO.class);
         Mockito.when(productRepository.findById(1L)).thenReturn(product);
         Mockito.when(categoryRepository.findByName(productDTO.getCategoryName())).thenReturn(category);
         Mockito.when(productRepository.save(product.get())).thenReturn(product.get());

@@ -25,12 +25,10 @@ public class ProductServiceImplement implements ProductService {
     private ProductRepository productRepository;
     @Autowired
     private CategoryRepository categoryRepository;
-    @Autowired
-    private ModelMapper modelMapper;
+    private ModelMapper modelMapper = new ModelMapper();
 
     @Override
     public Page<ProductDTO> getAllProducts(Specification<Product> specification, Pageable pageable) {
-        ModelMapper modelMapper = new ModelMapper();
         Page<Product> pageProduct = productRepository.findAll(specification, pageable);
         Page<ProductDTO> pageProductDTO = pageProduct.map(product -> modelMapper.map(product, ProductDTO.class));
         return pageProductDTO;
@@ -74,7 +72,7 @@ public class ProductServiceImplement implements ProductService {
         product.get().setPrice(dto.getPrice());
         product.get().setQuantity(dto.getQuantity());
         productRepository.save(product.get());
-        return modelMapper.map(product,ProductDTO.class);
+        return modelMapper.map(product.get(),ProductDTO.class);
     }
 
     @Override
