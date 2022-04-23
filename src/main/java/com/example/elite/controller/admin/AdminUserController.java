@@ -25,9 +25,9 @@ public class AdminUserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseDTO> delete(@PathVariable(name="id") String userId){
+    public ResponseEntity<ResponseDTO> delete(@PathVariable(name="id") int userId){
         ResponseDTO responseDTO = new ResponseDTO();
-        UserDTO checkDTO = userService.deleteUserById(Integer.parseInt(userId));
+        UserDTO checkDTO = userService.deleteUserById(userId);
         if (checkDTO != null) {
             responseDTO.setSuccessMessage("DELETE SUCCESSFULLY");
         }
@@ -67,7 +67,7 @@ public class AdminUserController {
 
     }
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/{username}")
+    @GetMapping("/username/{username}")
     public ResponseEntity<ResponseDTO> findByUsername(@PathVariable(name="username") String username){
         ResponseDTO responseDTO = new ResponseDTO();
         UserDTO user = userService.findByUserName(username);

@@ -16,4 +16,5 @@ public class UserDTO {
     private String email;
     private String roleName;
     private String phone;
+    private boolean status;
 }

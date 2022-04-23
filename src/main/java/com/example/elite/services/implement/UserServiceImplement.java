@@ -52,7 +52,9 @@ public class UserServiceImplement implements UserService {
 
     @Override
     public UserDTO findByUserName(String username) {
-        return modelMapper.map(userRepository.findUserByUsername(username),UserDTO.class);
+        User user = userRepository.findUserByUsername(username);
+        if(user==null) throw new UsernameNotFoundException("USER NAME NOT FOUND!");
+        return modelMapper.map(user,UserDTO.class);
     }
 
     @Override
@@ -99,13 +101,12 @@ public class UserServiceImplement implements UserService {
 
     @Override
     public UserDTO deleteUserById(int userId) throws NoSuchElementException {
-        Optional<User> user;
-        user = userRepository.findById(userId);
+        Optional<User> user = userRepository.findById(userId);
         user.get().setStatus(false);
         userRepository.save(user.get());
-        return modelMapper.map(userRepository.save(user.get()), UserDTO.class);
+        UserDTO userDTO = modelMapper.map(user.get(),UserDTO.class);
+        return userDTO;
     }
-
     @Override
     public UserDTO addUser(AddUserDTO user) {
         User userTmp = userRepository.findUserByUsername(user.getUsername());
@@ -134,15 +135,16 @@ public class UserServiceImplement implements UserService {
         Optional<User> userTmp = userRepository.findById(id);
         userTmp.get().setFullName(user.getFullName());
         userTmp.get().setEmail(user.getEmail());
-        return modelMapper.map(userRepository.save(user), UserDTO.class);
+        userRepository.save(userTmp.get());
+        UserDTO userDTO = modelMapper.map(userTmp.get(),UserDTO.class);
+        return userDTO;
     }
 
     @Override
     public Page<UserDTO> getAllUser(int pageNum, int pageSize) {
-        ModelMapper modelMapper = new ModelMapper();
         Pageable pageable = PageRequest.of(pageNum, pageSize);
         Page<User> pageUser = userRepository.findAll(pageable);
-        Page<UserDTO> pageUserDTO = pageUser.map(user->modelMapper.map(user,UserDTO.class));
+        Page<UserDTO> pageUserDTO = pageUser.map( user-> modelMapper.map(user,UserDTO.class));
         return pageUserDTO;
     }
 }
