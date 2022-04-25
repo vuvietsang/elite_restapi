@@ -17,4 +17,5 @@ public class UserDTO {
     private String roleName;
     private String phone;
     private boolean status;
+    private String avatar;
 }

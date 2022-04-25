@@ -45,7 +45,6 @@ public class TokenVerifier extends OncePerRequestFilter {
             var authorities = (List<Map<String, String>>)body.get("authorities");
             Set<SimpleGrantedAuthority> simpleGrantedAuthorities = authorities.stream()
                     .map(m->new SimpleGrantedAuthority("ROLE_"+m.get("authority"))).collect(Collectors.toSet());
-
             Authentication authentication = new UsernamePasswordAuthenticationToken(username,null,simpleGrantedAuthorities);
             SecurityContextHolder.getContext().setAuthentication(authentication);
 

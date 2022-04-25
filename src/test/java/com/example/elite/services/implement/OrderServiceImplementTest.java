@@ -1,7 +1,10 @@
 package com.example.elite.services.implement;
 
 import com.example.elite.dto.OrderDTO;
+import com.example.elite.dto.OrderDetailDTO;
+import com.example.elite.entities.OrderDetail;
 import com.example.elite.entities.Orders;
+import com.example.elite.entities.Product;
 import com.example.elite.entities.User;
 import com.example.elite.repository.OrderDetailsRepository;
 import com.example.elite.repository.OrderRepository;
@@ -17,13 +20,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -43,6 +44,9 @@ class OrderServiceImplementTest {
     @Mock
     OrderDetailsRepository orderDetailsRepository;
 
+    @Mock
+    SecurityContextHolder securityContextHolder;
+
     @InjectMocks
     private OrderServiceImplement orderSevice;
 
@@ -53,7 +57,7 @@ class OrderServiceImplementTest {
         modelMapper = new ModelMapper();
     }
     @Test
-    void getOrder() {
+    void getOrder_WithValidData_shouldReturnOrderDTO() {
         User user = User.builder().id(1).build();
         Optional<Orders> orders = Optional.of(Orders.builder()
                 .createDate(LocalDate.now())
@@ -68,7 +72,7 @@ class OrderServiceImplementTest {
     }
 
     @Test
-    void deleteOrder() {
+    void deleteOrder_WithValidData_shouldReturnOrderDTO() {
         User user = User.builder().id(1).build();
         Optional<Orders> orders = Optional.of(Orders.builder()
                 .createDate(LocalDate.now())
@@ -86,11 +90,37 @@ class OrderServiceImplementTest {
 
     @Test
     void checkout() {
+        User user = User.builder().id(1).username("vuvietsang").build();
+        Optional<Product> product = Optional.of(Product.builder().price(1000).id(1).build());
+        Optional<Product> product1 = Optional.of(Product.builder().price(1000).id(2).build());
+        double totalPrice = 0;
 
+        Mockito.when(SecurityContextHolder.getContext().getAuthentication().getPrincipal()).thenReturn("vuvietsang");
+        Mockito.when(userRepository.findUserByUsername("vuvietsang")).thenReturn(user);
+
+        Orders order = Orders.builder().createDate(LocalDate.now()).status(false).user(user).build();
+        Mockito.when(orderRepository.save(order)).thenReturn(order);
+
+        OrderDetailDTO[] orderDetailDTO ={OrderDetailDTO.builder().productId(1L).quantity(10).build(),OrderDetailDTO.builder().productId(2L).quantity(10).build()};
+        Mockito.when(productRepository.findById(orderDetailDTO[0].getProductId())).thenReturn(product);
+        Mockito.when(productRepository.findById(orderDetailDTO[1].getProductId())).thenReturn(product1);
+
+        OrderDetail oDetails = OrderDetail.builder().orders(order).product(product.get()).quantity(product.get().getQuantity())
+                .price(product.get().getPrice()).build();
+        Mockito.when(orderDetailsRepository.save(oDetails)).thenReturn(oDetails);
+        totalPrice += oDetails.getPrice()*oDetails.getQuantity();
+
+        OrderDetail oDetails1 = OrderDetail.builder().orders(order).product(product.get()).quantity(product.get().getQuantity())
+                .price(product.get().getPrice()).build();
+        Mockito.when(orderDetailsRepository.save(oDetails1)).thenReturn(oDetails1);
+        totalPrice += oDetails1.getPrice()*oDetails.getQuantity();
+
+        order.setTotalPrice(totalPrice);
+        OrderDTO orderDTO = modelMapper.map(order,OrderDTO.class);
+        Assertions.assertEquals(orderSevice.checkout(orderDetailDTO),orderDTO);
     }
-
     @Test
-    void confirmOrder() {
+    void confirmOrder_WithValidData_shouldReturnOrderDTO() {
         User user = User.builder().id(1).build();
         Optional<Orders> orders = Optional.of(Orders.builder()
                 .createDate(LocalDate.now())
@@ -109,7 +139,7 @@ class OrderServiceImplementTest {
     }
 
     @Test
-    void getAllOrders() {
+    void getAllOrders_WithValidData_shouldReturnOrderDTOPage() {
         Pageable pageable = PageRequest.of(0, 10);
         Optional<Orders> orders1 = Optional.of(Orders.builder()
                 .createDate(LocalDate.now())
@@ -143,7 +173,7 @@ class OrderServiceImplementTest {
     }
 
     @Test
-    void getOrderByUserId() {
+    void getOrderByUserId_WithValidData_shouldReturnOrderDTOPage() {
         User user = User.builder().id(1).build();
         Pageable pageable = PageRequest.of(0, 10);
         Optional<Orders> orders1 = Optional.of(Orders.builder()
@@ -172,7 +202,7 @@ class OrderServiceImplementTest {
     }
 
     @Test
-    void getOrdersByEmail() {
+    void getOrdersByEmail_WithValidData_shouldReturnOrderDTOPage() {
         User user = User.builder().id(1).email("vuvietsang10a9@gmail.com").build();
         Pageable pageable = PageRequest.of(0, 10);
         Optional<Orders> orders1 = Optional.of(Orders.builder()
@@ -193,7 +223,6 @@ class OrderServiceImplementTest {
         Page<Orders> ordersPage = new PageImpl<Orders>(List.of(orders1.get(), orders2.get()), pageable, 2);
         Mockito.when(orderRepository.getOrdersByUserEmail(pageable, user.getEmail())).thenReturn(ordersPage);
         Page<OrderDTO> orderDTOPage = ordersPage.map(orders -> modelMapper.map(orders, OrderDTO.class));
-
         Assertions.assertEquals(orderSevice.getOrdersByEmail(pageable.getPageNumber(), pageable.getPageSize(), user.getEmail()), orderDTOPage);
         Assertions.assertEquals(orderSevice.getOrdersByEmail(pageable.getPageNumber(), pageable.getPageSize(), user.getEmail()).getTotalPages(), orderDTOPage.getTotalPages());
         Assertions.assertEquals(orderSevice.getOrdersByEmail(pageable.getPageNumber(), pageable.getPageSize(), user.getEmail()).getSize(), orderDTOPage.getSize());

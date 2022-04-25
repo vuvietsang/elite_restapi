@@ -49,7 +49,7 @@ class ProductServiceImplementTest {
     }
 
     @Test
-    void getProductById() {
+    void getProductById_WithValidData_ShouldReturnProductDTO() {
         Optional<Product> product = Optional.of(Product.builder().id(1L).build());
         Mockito.when(productRepository.findById(1L)).thenReturn(product);
         ProductDTO productDTO = modelMapper.map(product.get(), ProductDTO.class);
@@ -57,7 +57,7 @@ class ProductServiceImplementTest {
     }
 
     @Test
-    void getAllProducts() {
+    void getAllProducts_WithValidData_ShouldReturnProductDTOPage() {
         ProductSpecificationBuilder builder = new ProductSpecificationBuilder();
         Specification<Product> spec = builder.build();
         Product product1 = new Product();
@@ -69,7 +69,7 @@ class ProductServiceImplementTest {
     }
 
     @Test
-    void addProduct() {
+    void addProduct_WithValidData_ShouldReturnProductDTO() {
         //given
         Category category = Category.builder()
                 .id(123)
@@ -93,7 +93,7 @@ class ProductServiceImplementTest {
     }
 
     @Test
-    void updateProduct() {
+    void updateProduct_WithValidData_ShouldReturnProductDTO() {
         Optional<Product> product =Optional.of(new Product());
         Category category = new Category();
         category.setName("Fruits");
@@ -111,7 +111,7 @@ class ProductServiceImplementTest {
         Assertions.assertEquals(productService.updateProduct(productDTO,1L),productDTO);
     }
     @Test
-    void deleteProduct() {
+    void deleteProduct_WithValidData_ShouldReturnProductDTO() {
         Optional<Product> product = Optional.of(new Product());
         product.get().setId(1L);
         product.get().setStatus(true);

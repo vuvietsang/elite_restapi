@@ -54,7 +54,7 @@ class UserServiceImplementTest {
         modelMapper = new ModelMapper();
     }
     @Test
-    void findByUserName() {
+    void findByUserName_WithValidData_shouldReturnUserDTO() {
         User user = new User();
         user.setUsername("sangvv");
         Mockito.when(userRepository.findUserByUsername("sangvv")).thenReturn(user);
@@ -63,7 +63,7 @@ class UserServiceImplementTest {
     }
 
     @Test
-    void login() {
+    void login_WithValidData_shouldReturnUserDTO() {
         Authentication authentication = new UsernamePasswordAuthenticationToken("sang", "123");
         Mockito.when(authentication.isAuthenticated()).thenReturn(true);
     }
@@ -74,7 +74,7 @@ class UserServiceImplementTest {
     }
 
     @Test
-    void deleteUserById() {
+    void deleteUserById_WithValidData_shouldReturnUserDTO() {
         Optional<User> user = Optional.of(User.builder().id(1).status(true).build());
         Mockito.when(userRepository.findById(1)).thenReturn(user);
         UserDTO userDTO = modelMapper.map(user.get(),UserDTO.class);
@@ -83,7 +83,7 @@ class UserServiceImplementTest {
     }
 
     @Test
-    void addUser() {
+    void addUser_WithValidData_shouldReturnUserDTO() {
         AddUserDTO addUserDTO = AddUserDTO.builder().roleName("ADMIN").username("sangvv").email("vuvietsang10a9@gmail.com").build();
         Role role = Role.builder().roleName("ADMIN").id(1).build();
         Mockito.when(userRepository.findUserByUsername("sangvv")).thenReturn(null);
@@ -91,25 +91,21 @@ class UserServiceImplementTest {
         User user = modelMapper.map(addUserDTO,User.class);
         Mockito.when(userRepository.save(user)).thenReturn(user);
         UserDTO userDTO = modelMapper.map(user,UserDTO.class);
-
         Assertions.assertEquals(userService.addUser(addUserDTO),userDTO);
-
     }
 
     @Test
-    void updateUser() {
+    void updateUser_WithValidData_shouldReturnUserDTO() {
         Optional<User> user = Optional.of(User.builder().id(1).status(true).build());
         user.get().setFullName("HIHI");
         user.get().setEmail("vuvuvuvu@gmail.com");
         Mockito.when(userRepository.findById(1)).thenReturn(user);
         UserDTO userDTO = modelMapper.map(user.get(),UserDTO.class);
-
         Assertions.assertEquals(userService.updateUser(user.get(),1), userDTO);
-
     }
 
     @Test
-    void getAllUser() {
+    void getAllUser_WithValidData_shouldReturnUserDTOPage() {
         Pageable pageable = PageRequest.of(0,10);
         Optional<User> user1 = Optional.of(User.builder().id(1).status(true).build());
         Optional<User> user2 = Optional.of(User.builder().id(2).status(true).build());

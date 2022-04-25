@@ -66,7 +66,7 @@ public class OrderServiceImplement implements OrderSevice {
         orderRepository.save(order);
         for (int i = 0; i < orderDetails.length; i++) {
             Product product = this.productRepository
-                    .findById(Long.parseLong(orderDetails[i].getProductId())).get();
+                    .findById(orderDetails[i].getProductId()).get();
             int quantity = orderDetails[i].getQuantity();
                 double price = quantity * product.getPrice();
                 totalPrice+=price;

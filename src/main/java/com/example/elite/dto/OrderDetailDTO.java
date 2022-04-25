@@ -15,7 +15,7 @@ import javax.validation.constraints.NotBlank;
 @Builder
 public class OrderDetailDTO {
     @NotBlank
-    private String productId;
+    private Long productId;
     @Min(1)
     private int quantity;
 }
