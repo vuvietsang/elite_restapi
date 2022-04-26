@@ -1,26 +1,26 @@
 package com.example.elite.services;
 
-import com.example.elite.dto.AddUserDTO;
-import com.example.elite.dto.LoginDTO;
-import com.example.elite.dto.LoginResponseDTO;
-import com.example.elite.dto.UserDTO;
+import com.example.elite.dto.AddUserDto;
+import com.example.elite.dto.LoginDto;
+import com.example.elite.dto.LoginResponseDto;
+import com.example.elite.dto.UserDto;
 import com.example.elite.entities.User;
 import org.springframework.data.domain.Page;
 
 import javax.management.relation.RoleNotFoundException;
 
 public interface UserService {
-    public UserDTO findByUserName(String username);
+    public UserDto findByUserName(String username);
 
-    public LoginResponseDTO login(LoginDTO user);
+    public LoginResponseDto login(LoginDto user);
 
-    public LoginResponseDTO register(User user) throws RoleNotFoundException;
+    public LoginResponseDto register(User user) throws RoleNotFoundException;
 
-    public UserDTO deleteUserById(int userId);
+    public UserDto deleteUserById(int userId);
 
-    public UserDTO addUser(AddUserDTO user);
+    public UserDto addUser(AddUserDto user);
 
-    public UserDTO updateUser(User user, int id);
+    public UserDto updateUser(User user, int id);
 
-    public Page<UserDTO> getAllUser(int pageNum, int pageSize);
+    public Page<UserDto> getAllUser(int pageNum, int pageSize);
 }

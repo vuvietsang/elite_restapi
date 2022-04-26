@@ -1,27 +1,27 @@
 package com.example.elite.services;
 
 
-import com.example.elite.dto.OrderDTO;
-import com.example.elite.dto.OrderDetailDTO;
+import com.example.elite.dto.OrderDto;
+import com.example.elite.dto.OrderDetailDto;
 import com.example.elite.entities.Orders;
 import org.springframework.data.domain.Page;
 
 
 
 public interface OrderSevice {
-    OrderDTO getOrderById(int orderId);
+    OrderDto getOrderById(int orderId);
 
-    OrderDTO deleteOrder(int orderId);
+    OrderDto deleteOrder(int orderId);
 
-    OrderDTO updateOrder(Orders order, int orderId);
+    OrderDto updateOrder(Orders order, int orderId);
 
-    OrderDTO checkout(OrderDetailDTO[] orderDetails);
+    OrderDto checkout(OrderDetailDto[] orderDetails);
 
-    OrderDTO confirmOrder(int orderId);
+    OrderDto confirmOrder(int orderId);
 
-    Page<OrderDTO> getAllOrders(int pageNum, int pageSize);
+    Page<OrderDto> getAllOrders(int pageNum, int pageSize);
 
-    Page<OrderDTO> getOrderByUserId(int pageNum, int pageSize, int userId);
+    Page<OrderDto> getOrderByUserId(int pageNum, int pageSize, int userId);
 
-    Page<OrderDTO> getOrdersByEmail(int pageNum, int pageSize, String email);
+    Page<OrderDto> getOrdersByEmail(int pageNum, int pageSize, String email);
 }

@@ -1,8 +1,7 @@
 package com.example.elite.controller.admin;
 
-import com.example.elite.dto.ProductDTO;
-import com.example.elite.dto.ResponseDTO;
-import com.example.elite.entities.Product;
+import com.example.elite.dto.ProductDto;
+import com.example.elite.dto.ResponseDto;
 import com.example.elite.services.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,18 +21,18 @@ public class AdminProductController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}")
-    public ResponseEntity<ResponseDTO> updateProduct(@Valid @RequestBody ProductDTO dto, @PathVariable(name="id")  Long id){
-        ResponseDTO responseDTO = new ResponseDTO();
-        ProductDTO dtoReturn = productService.updateProduct(dto,id);
+    public ResponseEntity<ResponseDto> updateProduct(@Valid @RequestBody ProductDto dto, @PathVariable(name="id")  Long id){
+        ResponseDto responseDTO = new ResponseDto();
+        ProductDto dtoReturn = productService.updateProduct(dto,id);
             responseDTO.setSuccessMessage("UPDATE PRODUCT SUCCESSFULLY!");
             responseDTO.setData(dtoReturn);
         return ResponseEntity.ok().body(responseDTO);
     }
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseDTO> deleteProduct(@PathVariable(name="id")  Long id){
-        ResponseDTO responseDTO = new ResponseDTO();
-        ProductDTO check = productService.deleteProduct(id);
+    public ResponseEntity<ResponseDto> deleteProduct(@PathVariable(name="id")  Long id){
+        ResponseDto responseDTO = new ResponseDto();
+        ProductDto check = productService.deleteProduct(id);
         HttpStatus status = HttpStatus.BAD_REQUEST;
         if(check!=null){
             responseDTO.setSuccessMessage("DELETE PRODUCT SUCCESSFULLY!");
@@ -44,9 +43,9 @@ public class AdminProductController {
     }
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<ResponseDTO> addNewProduct(@Validated @RequestBody ProductDTO dto){
-        ResponseDTO responseDTO = new ResponseDTO();
-        ProductDTO dtoTMp = productService.addProduct(dto);
+    public ResponseEntity<ResponseDto> addNewProduct(@Validated @RequestBody ProductDto dto){
+        ResponseDto responseDTO = new ResponseDto();
+        ProductDto dtoTMp = productService.addProduct(dto);
         if(dtoTMp!=null){
             responseDTO.setSuccessMessage("ADD PRODUCT SUCCESSFULLY!");
             responseDTO.setData(dtoTMp);

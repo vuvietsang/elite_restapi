@@ -1,8 +1,8 @@
 package com.example.elite.controller.admin;
 
-import com.example.elite.dto.AddUserDTO;
-import com.example.elite.dto.ResponseDTO;
-import com.example.elite.dto.UserDTO;
+import com.example.elite.dto.AddUserDto;
+import com.example.elite.dto.ResponseDto;
+import com.example.elite.dto.UserDto;
 import com.example.elite.entities.User;
 import com.example.elite.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -25,9 +25,9 @@ public class AdminUserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseDTO> delete(@PathVariable(name="id") int userId){
-        ResponseDTO responseDTO = new ResponseDTO();
-        UserDTO checkDTO = userService.deleteUserById(userId);
+    public ResponseEntity<ResponseDto> delete(@PathVariable(name="id") int userId){
+        ResponseDto responseDTO = new ResponseDto();
+        UserDto checkDTO = userService.deleteUserById(userId);
         if (checkDTO != null) {
             responseDTO.setSuccessMessage("DELETE SUCCESSFULLY");
         }
@@ -35,9 +35,9 @@ public class AdminUserController {
     }
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add")
-    public ResponseEntity<ResponseDTO> add(@Validated @RequestBody AddUserDTO user) {
-        ResponseDTO responseDTO = new ResponseDTO();
-        UserDTO checkDTO = userService.addUser(user);
+    public ResponseEntity<ResponseDto> add(@Validated @RequestBody AddUserDto user) {
+        ResponseDto responseDTO = new ResponseDto();
+        UserDto checkDTO = userService.addUser(user);
         if (checkDTO != null) {
             responseDTO.setSuccessMessage("ADD SUCCESSFULLY");
         }
@@ -45,9 +45,9 @@ public class AdminUserController {
     }
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/update/{id}")
-    public ResponseEntity<ResponseDTO> update(@Validated @RequestBody User user, @PathVariable(name="id") int id) {
-        ResponseDTO responseDTO = new ResponseDTO();
-        UserDTO checkDTO = userService.updateUser(user, id);
+    public ResponseEntity<ResponseDto> update(@Validated @RequestBody User user, @PathVariable(name="id") int id) {
+        ResponseDto responseDTO = new ResponseDto();
+        UserDto checkDTO = userService.updateUser(user, id);
         if (checkDTO != null) {
             responseDTO.setSuccessMessage("UPDATE SUCCESSFULLY");
             return ResponseEntity.ok().body(responseDTO);
@@ -58,9 +58,9 @@ public class AdminUserController {
     }
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping()
-    public ResponseEntity<ResponseDTO> findAll(@RequestParam int pageNumber, @RequestParam int pageSize){
-        ResponseDTO responseDTO = new ResponseDTO();
-        Page<UserDTO> users = userService.getAllUser(pageNumber,pageSize);
+    public ResponseEntity<ResponseDto> findAll(@RequestParam int pageNumber, @RequestParam int pageSize){
+        ResponseDto responseDTO = new ResponseDto();
+        Page<UserDto> users = userService.getAllUser(pageNumber,pageSize);
             responseDTO.setData(users);
             responseDTO.setSuccessMessage("GET ALL SUCCESSFULLY");
             return ResponseEntity.ok().body(responseDTO);
@@ -68,9 +68,9 @@ public class AdminUserController {
     }
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/username/{username}")
-    public ResponseEntity<ResponseDTO> findByUsername(@PathVariable(name="username") String username){
-        ResponseDTO responseDTO = new ResponseDTO();
-        UserDTO user = userService.findByUserName(username);
+    public ResponseEntity<ResponseDto> findByUsername(@PathVariable(name="username") String username){
+        ResponseDto responseDTO = new ResponseDto();
+        UserDto user = userService.findByUserName(username);
         responseDTO.setData(user);
         responseDTO.setSuccessMessage("GET USER SUCCESSFULLY");
         return ResponseEntity.ok().body(responseDTO);

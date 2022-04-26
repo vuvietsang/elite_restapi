@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Data
 @Builder
-public class OrderDTO {
+public class OrderDto {
     private int id;
     private boolean status;
     private boolean isConfirmed;

@@ -1,27 +1,23 @@
 package com.example.elite.services.implement;
 
-import com.example.elite.dto.ProductDTO;
+import com.example.elite.dto.ProductDto;
 import com.example.elite.entities.Category;
 import com.example.elite.entities.Product;
 import com.example.elite.filter.ProductSpecificationBuilder;
 import com.example.elite.repository.CategoryRepository;
 import com.example.elite.repository.ProductRepository;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.ui.Model;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -49,7 +45,7 @@ class ProductServiceImplementTest {
     void getProductById_WithValidData_ShouldReturnProductDTO() {
         Optional<Product> product = Optional.of(Product.builder().id(1L).build());
         Mockito.when(productRepository.findById(1L)).thenReturn(product);
-        ProductDTO productDTO = modelMapper.map(product.get(), ProductDTO.class);
+        ProductDto productDTO = modelMapper.map(product.get(), ProductDto.class);
         assertEquals(productService.getProductById(1L),productDTO);
     }
 
@@ -61,7 +57,7 @@ class ProductServiceImplementTest {
         Product product2 = new Product();
         Page<Product> productPage = new PageImpl<>(List.of(product1,product2),pageable,2);
         Mockito.when(productRepository.findAll(spec,pageable)).thenReturn(productPage);
-        Page<ProductDTO> productDTOPage = productPage.map(product -> modelMapper.map(product,ProductDTO.class));
+        Page<ProductDto> productDTOPage = productPage.map(product -> modelMapper.map(product, ProductDto.class));
         Assertions.assertEquals(productService.getAllProducts(spec,pageable),productDTOPage);
     }
 
@@ -82,7 +78,7 @@ class ProductServiceImplementTest {
                 .quantity(100)
                 .description("yummy")
                 .status(true).build();
-        ProductDTO productDTO = modelMapper.map(product,ProductDTO.class);
+        ProductDto productDTO = modelMapper.map(product, ProductDto.class);
         Mockito.when(productRepository.findByName("Apple")).thenReturn(null);
         Mockito.when(categoryRepository.findByName("HIHI")).thenReturn(category);
         Mockito.when(productRepository.save(product)).thenReturn(product);
@@ -101,7 +97,7 @@ class ProductServiceImplementTest {
         product.get().setImage("Image");
         product.get().setName("Edited");
         product.get().setCategory(category);
-        ProductDTO productDTO = modelMapper.map(product.get(),ProductDTO.class);
+        ProductDto productDTO = modelMapper.map(product.get(), ProductDto.class);
         Mockito.when(productRepository.findById(1L)).thenReturn(product);
         Mockito.when(categoryRepository.findByName(productDTO.getCategoryName())).thenReturn(category);
         Mockito.when(productRepository.save(product.get())).thenReturn(product.get());
@@ -115,7 +111,7 @@ class ProductServiceImplementTest {
 
         Mockito.when(productRepository.findById(product.get().getId())).thenReturn(product);
         Mockito.when(productRepository.save(product.get())).thenReturn(product.get());
-        ProductDTO dto = modelMapper.map(product.get() , ProductDTO.class);
+        ProductDto dto = modelMapper.map(product.get() , ProductDto.class);
         dto.setStatus(false);
 
         Assertions.assertEquals(productService.deleteProduct(1L) ,dto);

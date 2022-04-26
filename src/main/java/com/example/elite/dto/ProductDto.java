@@ -1,7 +1,5 @@
 package com.example.elite.dto;
 
-import com.example.elite.entities.Category;
-import com.example.elite.entities.Rating;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,7 +16,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @Data
 @Builder
-public class ProductDTO {
+public class ProductDto {
     private long id;
     @Size(min=3)
     private String name;
@@ -40,7 +38,7 @@ public class ProductDTO {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ProductDTO that = (ProductDTO) o;
+        ProductDto that = (ProductDto) o;
         return id == that.id;
     }
 

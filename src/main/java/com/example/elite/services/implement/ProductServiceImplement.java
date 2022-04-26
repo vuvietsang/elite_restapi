@@ -1,6 +1,6 @@
 package com.example.elite.services.implement;
 
-import com.example.elite.dto.ProductDTO;
+import com.example.elite.dto.ProductDto;
 import com.example.elite.entities.Category;
 import com.example.elite.entities.Product;
 import com.example.elite.handle_exception.CategoryNotFoundException;
@@ -29,14 +29,14 @@ public class ProductServiceImplement implements ProductService {
     private ModelMapper modelMapper;
 
     @Override
-    public Page<ProductDTO> getAllProducts(Specification<Product> specification, Pageable pageable) {
+    public Page<ProductDto> getAllProducts(Specification<Product> specification, Pageable pageable) {
         Page<Product> pageProduct = productRepository.findAll(specification, pageable);
-        Page<ProductDTO> pageProductDTO = pageProduct.map(product -> modelMapper.map(product, ProductDTO.class));
+        Page<ProductDto> pageProductDTO = pageProduct.map(product -> modelMapper.map(product, ProductDto.class));
         return pageProductDTO;
     }
 
     @Override
-    public ProductDTO addProduct(ProductDTO dto) {
+    public ProductDto addProduct(ProductDto dto) {
         Product productExist = productRepository.findByName(dto.getName());
         Category category =categoryRepository.findByName(dto.getCategoryName());
         if(category==null){
@@ -54,11 +54,11 @@ public class ProductServiceImplement implements ProductService {
                 .status(true)
                 .quantity(dto.getQuantity())
                 .name(dto.getName()).build();
-        return modelMapper.map(productRepository.save(product),ProductDTO.class);
+        return modelMapper.map(productRepository.save(product), ProductDto.class);
     }
 
     @Override
-    public ProductDTO updateProduct(ProductDTO dto, Long productId) throws NoSuchElementException {
+    public ProductDto updateProduct(ProductDto dto, Long productId) throws NoSuchElementException {
         Optional<Product> product = productRepository.findById(productId);
 
         Category category =categoryRepository.findByName(dto.getCategoryName());
@@ -73,20 +73,20 @@ public class ProductServiceImplement implements ProductService {
         product.get().setPrice(dto.getPrice());
         product.get().setQuantity(dto.getQuantity());
         productRepository.save(product.get());
-        return modelMapper.map(product.get(),ProductDTO.class);
+        return modelMapper.map(product.get(), ProductDto.class);
     }
 
     @Override
-    public ProductDTO deleteProduct(Long productId)  throws NoSuchElementException {
+    public ProductDto deleteProduct(Long productId)  throws NoSuchElementException {
         Optional<Product> product = productRepository.findById(productId);
         product.get().setStatus(false);
-        return modelMapper.map(productRepository.save(product.get()),ProductDTO.class) ;
+        return modelMapper.map(productRepository.save(product.get()), ProductDto.class) ;
     }
 
     @Override
-    public ProductDTO getProductById(Long id) throws NoSuchElementException {
+    public ProductDto getProductById(Long id) throws NoSuchElementException {
         Optional<Product> product = productRepository.findById(id);
-        ProductDTO productDTO = modelMapper.map(product.get(),ProductDTO.class);
+        ProductDto productDTO = modelMapper.map(product.get(), ProductDto.class);
         return productDTO;
     }
 }

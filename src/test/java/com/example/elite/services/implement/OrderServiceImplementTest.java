@@ -1,7 +1,7 @@
 package com.example.elite.services.implement;
 
-import com.example.elite.dto.OrderDTO;
-import com.example.elite.dto.OrderDetailDTO;
+import com.example.elite.dto.OrderDto;
+import com.example.elite.dto.OrderDetailDto;
 import com.example.elite.entities.OrderDetail;
 import com.example.elite.entities.Orders;
 import com.example.elite.entities.Product;
@@ -10,9 +10,7 @@ import com.example.elite.repository.OrderDetailsRepository;
 import com.example.elite.repository.OrderRepository;
 import com.example.elite.repository.ProductRepository;
 import com.example.elite.repository.UserRepository;
-import com.example.elite.services.OrderSevice;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -63,7 +61,7 @@ class OrderServiceImplementTest {
                 .user(user)
                 .build());
         Mockito.when(orderRepository.findById(1)).thenReturn(orders);
-        OrderDTO orderDTO = modelMapper.map(orders.get(), OrderDTO.class);
+        OrderDto orderDTO = modelMapper.map(orders.get(), OrderDto.class);
         Assertions.assertEquals(orderSevice.getOrderById(1), orderDTO);
     }
 
@@ -79,7 +77,7 @@ class OrderServiceImplementTest {
                 .build());
         Mockito.when(orderRepository.findById(1)).thenReturn(orders);
         Mockito.when(orderRepository.save(orders.get())).thenReturn(orders.get());
-        OrderDTO orderDTO = modelMapper.map(orders.get(), OrderDTO.class);
+        OrderDto orderDTO = modelMapper.map(orders.get(), OrderDto.class);
         orderDTO.setStatus(false);
         Assertions.assertEquals(orderSevice.deleteOrder(1), orderDTO);
     }
@@ -97,7 +95,7 @@ class OrderServiceImplementTest {
         Orders order = Orders.builder().createDate(LocalDate.now()).status(false).user(user).build();
         Mockito.when(orderRepository.save(order)).thenReturn(order);
 
-        OrderDetailDTO[] orderDetailDTO ={OrderDetailDTO.builder().productId(1L).quantity(10).build(),OrderDetailDTO.builder().productId(2L).quantity(10).build()};
+        OrderDetailDto[] orderDetailDTO ={OrderDetailDto.builder().productId(1L).quantity(10).build(), OrderDetailDto.builder().productId(2L).quantity(10).build()};
         Mockito.when(productRepository.findById(orderDetailDTO[0].getProductId())).thenReturn(product);
         Mockito.when(productRepository.findById(orderDetailDTO[1].getProductId())).thenReturn(product1);
 
@@ -112,7 +110,7 @@ class OrderServiceImplementTest {
         totalPrice += oDetails1.getPrice()*oDetails.getQuantity();
 
         order.setTotalPrice(totalPrice);
-        OrderDTO orderDTO = modelMapper.map(order,OrderDTO.class);
+        OrderDto orderDTO = modelMapper.map(order, OrderDto.class);
         Assertions.assertEquals(orderSevice.checkout(orderDetailDTO),orderDTO);
     }
     @Test
@@ -129,7 +127,7 @@ class OrderServiceImplementTest {
         Mockito.when(orderRepository.findById(1)).thenReturn(orders);
         Mockito.when(orderRepository.save(orders.get())).thenReturn(orders.get());
 
-        OrderDTO orderDTO = modelMapper.map(orders.get(), OrderDTO.class);
+        OrderDto orderDTO = modelMapper.map(orders.get(), OrderDto.class);
         orderDTO.setConfirmed(true);
         Assertions.assertEquals(orderSevice.confirmOrder(1), orderDTO);
     }
@@ -160,7 +158,7 @@ class OrderServiceImplementTest {
                 .build());
         Page<Orders> ordersPage = new PageImpl<Orders>(List.of(orders1.get(), orders2.get(), orders3.get()), pageable, 3);
         Mockito.when(orderRepository.findAll(pageable)).thenReturn(ordersPage);
-        Page<OrderDTO> orderDTOPage = ordersPage.map(order -> modelMapper.map(order, OrderDTO.class));
+        Page<OrderDto> orderDTOPage = ordersPage.map(order -> modelMapper.map(order, OrderDto.class));
 
         Assertions.assertEquals(orderSevice.getAllOrders(pageable.getPageNumber(), pageable.getPageSize()), orderDTOPage);
         Assertions.assertEquals(orderSevice.getAllOrders(pageable.getPageNumber(), pageable.getPageSize()).getTotalPages(), orderDTOPage.getTotalPages());
@@ -189,7 +187,7 @@ class OrderServiceImplementTest {
                 .build());
         Page<Orders> ordersPage = new PageImpl<Orders>(List.of(orders1.get(), orders2.get()), pageable, 2);
         Mockito.when(orderRepository.getOrdersByUserId(pageable, user.getId())).thenReturn(ordersPage);
-        Page<OrderDTO> orderDTOPage = ordersPage.map(orders -> modelMapper.map(orders, OrderDTO.class));
+        Page<OrderDto> orderDTOPage = ordersPage.map(orders -> modelMapper.map(orders, OrderDto.class));
 
         Assertions.assertEquals(orderSevice.getOrderByUserId(pageable.getPageNumber(), pageable.getPageSize(), user.getId()), orderDTOPage);
         Assertions.assertEquals(orderSevice.getOrderByUserId(pageable.getPageNumber(), pageable.getPageSize(), user.getId()).getTotalPages(), orderDTOPage.getTotalPages());
@@ -218,7 +216,7 @@ class OrderServiceImplementTest {
                 .build());
         Page<Orders> ordersPage = new PageImpl<Orders>(List.of(orders1.get(), orders2.get()), pageable, 2);
         Mockito.when(orderRepository.getOrdersByUserEmail(pageable, user.getEmail())).thenReturn(ordersPage);
-        Page<OrderDTO> orderDTOPage = ordersPage.map(orders -> modelMapper.map(orders, OrderDTO.class));
+        Page<OrderDto> orderDTOPage = ordersPage.map(orders -> modelMapper.map(orders, OrderDto.class));
         Assertions.assertEquals(orderSevice.getOrdersByEmail(pageable.getPageNumber(), pageable.getPageSize(), user.getEmail()), orderDTOPage);
         Assertions.assertEquals(orderSevice.getOrdersByEmail(pageable.getPageNumber(), pageable.getPageSize(), user.getEmail()).getTotalPages(), orderDTOPage.getTotalPages());
         Assertions.assertEquals(orderSevice.getOrdersByEmail(pageable.getPageNumber(), pageable.getPageSize(), user.getEmail()).getSize(), orderDTOPage.getSize());

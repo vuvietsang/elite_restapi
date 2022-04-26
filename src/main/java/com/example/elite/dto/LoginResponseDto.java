@@ -5,17 +5,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 @Builder
-public class UserDTO {
+public class LoginResponseDto {
     private int userId;
     private String fullName;
     private String username;
     private String email;
     private String roleName;
+    private String token;
     private String phone;
-    private boolean status;
     private String avatar;
 }

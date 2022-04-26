@@ -1,7 +1,7 @@
 package com.example.elite.services.implement;
 
-import com.example.elite.dto.OrderDTO;
-import com.example.elite.dto.OrderDetailDTO;
+import com.example.elite.dto.OrderDto;
+import com.example.elite.dto.OrderDetailDto;
 import com.example.elite.entities.OrderDetail;
 import com.example.elite.entities.Orders;
 import com.example.elite.entities.Product;
@@ -38,27 +38,27 @@ public class OrderServiceImplement implements OrderSevice {
     private ModelMapper modelMapper;
 
     @Override
-    public OrderDTO getOrderById(int orderId) throws NoSuchElementException {
+    public OrderDto getOrderById(int orderId) throws NoSuchElementException {
         Optional<Orders> orders = orderRepository.findById(orderId);
-        OrderDTO orderDTO = modelMapper.map(orders.get(), OrderDTO.class);
+        OrderDto orderDTO = modelMapper.map(orders.get(), OrderDto.class);
         return orderDTO;
     }
 
     @Override
-    public OrderDTO deleteOrder(int orderId) throws NoSuchElementException {
+    public OrderDto deleteOrder(int orderId) throws NoSuchElementException {
         Optional<Orders> orders = orderRepository.findById(orderId);
         orders.get().setStatus(false);
-        OrderDTO orderDTO = modelMapper.map(orderRepository.save(orders.get()), OrderDTO.class);
+        OrderDto orderDTO = modelMapper.map(orderRepository.save(orders.get()), OrderDto.class);
         return orderDTO;
     }
 
     @Override
-    public OrderDTO updateOrder(Orders order, int orderId) {
+    public OrderDto updateOrder(Orders order, int orderId) {
         return null;
     }
 
     @Override
-    public OrderDTO checkout(OrderDetailDTO[] orderDetails) {
+    public OrderDto checkout(OrderDetailDto[] orderDetails) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userName = (String) authentication.getPrincipal();
         User userInDb = this.userRepository.findUserByUsername(userName);
@@ -76,37 +76,37 @@ public class OrderServiceImplement implements OrderSevice {
                 this.orderDetailsRepository.save(oDetails);
         }
         order.setTotalPrice(totalPrice);
-        return modelMapper.map(orderRepository.save(order), OrderDTO.class);
+        return modelMapper.map(orderRepository.save(order), OrderDto.class);
     }
 
     @Override
-    public OrderDTO confirmOrder(int orderId) throws NoSuchElementException {
+    public OrderDto confirmOrder(int orderId) throws NoSuchElementException {
         Optional<Orders> orders = orderRepository.findById(orderId);
         orders.get().setConfirmed(true);
         orderRepository.save(orders.get());
-        return modelMapper.map(orderRepository.save(orders.get()), OrderDTO.class);
+        return modelMapper.map(orderRepository.save(orders.get()), OrderDto.class);
     }
 
     @Override
-    public Page<OrderDTO> getAllOrders(int pageNum, int pageSize) {
+    public Page<OrderDto> getAllOrders(int pageNum, int pageSize) {
         Pageable pageable = PageRequest.of(pageNum,pageSize);
         Page<Orders> pageOrders = orderRepository.findAll(pageable);
-        Page<OrderDTO> orderDTOPage = pageOrders.map(order -> modelMapper.map(order,OrderDTO.class));
+        Page<OrderDto> orderDTOPage = pageOrders.map(order -> modelMapper.map(order, OrderDto.class));
         return orderDTOPage;
     }
 
     @Override
-    public Page<OrderDTO> getOrderByUserId(int pageNum, int pageSize, int userId) {
+    public Page<OrderDto> getOrderByUserId(int pageNum, int pageSize, int userId) {
         Pageable pageable = PageRequest.of(pageNum,pageSize);
         Page<Orders> pageOrders = orderRepository.getOrdersByUserId(pageable, userId);
-        Page<OrderDTO> orderDTOPage = pageOrders.map(order -> modelMapper.map(order,OrderDTO.class));
+        Page<OrderDto> orderDTOPage = pageOrders.map(order -> modelMapper.map(order, OrderDto.class));
         return orderDTOPage;
     }
     @Override
-    public Page<OrderDTO> getOrdersByEmail(int pageNum, int pageSize, String email) {
+    public Page<OrderDto> getOrdersByEmail(int pageNum, int pageSize, String email) {
         Pageable pageable = PageRequest.of(pageNum,pageSize);
         Page<Orders> pageOrders = orderRepository.getOrdersByUserEmail(pageable, email);
-        Page<OrderDTO> orderDTOPage = pageOrders.map(order -> modelMapper.map(order,OrderDTO.class));
+        Page<OrderDto> orderDTOPage = pageOrders.map(order -> modelMapper.map(order, OrderDto.class));
         return orderDTOPage;
     }
 }

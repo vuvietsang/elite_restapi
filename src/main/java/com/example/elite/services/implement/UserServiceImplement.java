@@ -1,9 +1,9 @@
 package com.example.elite.services.implement;
 
-import com.example.elite.dto.AddUserDTO;
-import com.example.elite.dto.LoginDTO;
-import com.example.elite.dto.LoginResponseDTO;
-import com.example.elite.dto.UserDTO;
+import com.example.elite.dto.AddUserDto;
+import com.example.elite.dto.LoginDto;
+import com.example.elite.dto.LoginResponseDto;
+import com.example.elite.dto.UserDto;
 import com.example.elite.entities.Role;
 import com.example.elite.entities.User;
 import com.example.elite.handle_exception.UserDisableException;
@@ -51,16 +51,16 @@ public class UserServiceImplement implements UserService {
     private ModelMapper modelMapper;
 
     @Override
-    public UserDTO findByUserName(String username) {
+    public UserDto findByUserName(String username) {
         User user = userRepository.findUserByUsername(username);
         if(user==null) throw new UsernameNotFoundException("USER NAME NOT FOUND!");
-        return modelMapper.map(user,UserDTO.class);
+        return modelMapper.map(user, UserDto.class);
     }
 
     @Override
-    public LoginResponseDTO login(LoginDTO user) throws AuthenticationException {
+    public LoginResponseDto login(LoginDto user) throws AuthenticationException {
         Authentication authentication = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
-        LoginResponseDTO loginResponseDTO = null;
+        LoginResponseDto loginResponseDTO = null;
         Authentication authenticate = authenticationManager.authenticate(authentication);
         if (authenticate.isAuthenticated()) {
                 User userAuthenticated = userRepository.findUserByUsername(user.getUsername());
@@ -68,7 +68,7 @@ public class UserServiceImplement implements UserService {
                     throw new UserDisableException("THIS USER IS NOT AVAILABLE AT THIS TIME");
                 }
                 String token = Utils.buildJWT(authenticate,userAuthenticated,secretKey,jwtConfig);
-                loginResponseDTO = LoginResponseDTO.builder()
+                loginResponseDTO = LoginResponseDto.builder()
                         .userId(userAuthenticated.getId())
                         .fullName(userAuthenticated.getFullName())
                         .username(userAuthenticated.getUsername())
@@ -80,8 +80,8 @@ public class UserServiceImplement implements UserService {
         return loginResponseDTO;
     }
     @Override
-    public LoginResponseDTO register(User user) throws UsernameNotFoundException, RoleNotFoundException {
-        LoginResponseDTO loginResponseDTO =null;
+    public LoginResponseDto register(User user) throws UsernameNotFoundException, RoleNotFoundException {
+        LoginResponseDto loginResponseDTO =null;
         User checkUser = userRepository.findUserByUsername(user.getUsername());
         Role role =roleRepository.findByRoleName("USER");
         if(role==null){
@@ -94,22 +94,22 @@ public class UserServiceImplement implements UserService {
             User userTmp = User.builder().username(user.getUsername()).email(user.getEmail()).fullName(user.getFullName()).role(role).phone(user.getPhone())
                     .password(passwordEncoder.encode(user.getPassword())).status(true).createDate(LocalDate.now()).build();
             userRepository.save(userTmp);
-            LoginDTO loginDTO = new LoginDTO(user.getUsername(), user.getPassword());
+            LoginDto loginDTO = new LoginDto(user.getUsername(), user.getPassword());
             loginResponseDTO = login(loginDTO);
         }
         return loginResponseDTO;
     }
 
     @Override
-    public UserDTO deleteUserById(int userId) throws NoSuchElementException {
+    public UserDto deleteUserById(int userId) throws NoSuchElementException {
         Optional<User> user = userRepository.findById(userId);
         user.get().setStatus(false);
         userRepository.save(user.get());
-        UserDTO userDTO = modelMapper.map(user.get(),UserDTO.class);
+        UserDto userDTO = modelMapper.map(user.get(), UserDto.class);
         return userDTO;
     }
     @Override
-    public UserDTO addUser(AddUserDTO user) {
+    public UserDto addUser(AddUserDto user) {
         User userTmp = userRepository.findUserByUsername(user.getUsername());
         if (userTmp != null) {
             throw new UserNameExistException("THIS USERNAME ALREADY EXISTED!");
@@ -130,25 +130,25 @@ public class UserServiceImplement implements UserService {
                 .password(passwordEncoder.encode(user.getPassword()))
                 .build();
         User inRepo= userRepository.save(userBuild);
-        UserDTO userDTO = modelMapper.map(inRepo,UserDTO.class);
+        UserDto userDTO = modelMapper.map(inRepo, UserDto.class);
         return userDTO;
     }
 
     @Override
-    public UserDTO updateUser(User user, int id) throws NoSuchElementException {
+    public UserDto updateUser(User user, int id) throws NoSuchElementException {
         Optional<User> userTmp = userRepository.findById(id);
         userTmp.get().setFullName(user.getFullName());
         userTmp.get().setEmail(user.getEmail());
         userRepository.save(userTmp.get());
-        UserDTO userDTO = modelMapper.map(userTmp.get(),UserDTO.class);
+        UserDto userDTO = modelMapper.map(userTmp.get(), UserDto.class);
         return userDTO;
     }
 
     @Override
-    public Page<UserDTO> getAllUser(int pageNum, int pageSize) {
+    public Page<UserDto> getAllUser(int pageNum, int pageSize) {
         Pageable pageable = PageRequest.of(pageNum, pageSize);
         Page<User> pageUser = userRepository.findAll(pageable);
-        Page<UserDTO> pageUserDTO = pageUser.map( user-> modelMapper.map(user,UserDTO.class));
+        Page<UserDto> pageUserDTO = pageUser.map(user-> modelMapper.map(user, UserDto.class));
         return pageUserDTO;
     }
 }
