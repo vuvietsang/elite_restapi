@@ -28,8 +28,7 @@ public class Utils {
                 .setIssuedAt((new Date())).setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(jwtConfig.getTokenExpirationAfterDays()))).signWith(secretKey).compact();
         return token;
     };
-    public static
-    Specification buildProductSpecifications(String search){
+    public static Specification buildProductSpecifications(String search){
         ProductSpecificationBuilder builder = new ProductSpecificationBuilder();
 
         Pattern pattern = Pattern.compile("(\\w+?)(:|<|>)(\\w+?),");

@@ -25,17 +25,16 @@ public class UserProductController {
     public ResponseEntity<ResponseDto> getAllProduct(@RequestParam Integer pageNumber,
                                                      @RequestParam Integer pageSize,
                                                      @RequestParam String search){
-            ResponseDto responseDTO = new ResponseDto();
+            ResponseDto<Page<ProductDto>> responseDTO = new ResponseDto();
             Pageable pageable = PageRequest.of(Optional.ofNullable(pageNumber).orElse(0),Optional.ofNullable(pageSize).orElse(10));
             Specification spec = Utils.buildProductSpecifications(search);
-            Page<ProductDto> page = productService.getAllProducts(spec,  pageable);
-            responseDTO.setData(page);
+            responseDTO.setData(productService.getAllProducts(spec,  pageable));
             responseDTO.setSuccessMessage("GET ALL PRODUCTS SUCCESSFULLY");
             return ResponseEntity.ok().body(responseDTO);
     }
     @GetMapping("/{id}")
     public ResponseEntity<ResponseDto> getProductById(@PathVariable(value = "id") Long id){
-        ResponseDto responseDTO = new ResponseDto();
+        ResponseDto<ProductDto> responseDTO = new ResponseDto();
         responseDTO.setData(productService.getProductById(id));
         responseDTO.setSuccessMessage("GET PRODUCT SUCCESSFULLY!");
         return ResponseEntity.ok().body(responseDTO);

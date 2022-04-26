@@ -22,7 +22,7 @@ public class UserController {
     private UserService userService;
     @PostMapping("/login")
     public ResponseEntity<ResponseDto> login(@Validated @RequestBody LoginDto user){
-        ResponseDto responseDTO = new ResponseDto();
+        ResponseDto<LoginResponseDto> responseDTO = new ResponseDto();
         LoginResponseDto loginResponseDTO=null;
         loginResponseDTO = userService.login(user);
         responseDTO.setData(loginResponseDTO);
@@ -31,9 +31,8 @@ public class UserController {
     }
     @PostMapping("/register")
     public ResponseEntity<ResponseDto> register(@Validated @RequestBody User user) throws RoleNotFoundException {
-        ResponseDto responseDTO = new ResponseDto();
-        LoginResponseDto loginResponseDTO = null;
-            loginResponseDTO = userService.register(user);
+        ResponseDto<LoginResponseDto> responseDTO = new ResponseDto();
+        LoginResponseDto loginResponseDTO = userService.register(user);
             responseDTO.setData(loginResponseDTO);
             responseDTO.setSuccessMessage("REGISTER_SUCCESS");
             return ResponseEntity.ok().body(responseDTO);
