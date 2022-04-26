@@ -50,12 +50,8 @@ class OrderServiceImplementTest {
     @InjectMocks
     private OrderServiceImplement orderSevice;
 
-    ModelMapper modelMapper;
-
-    @BeforeEach
-    void setUp(){
-        modelMapper = new ModelMapper();
-    }
+    @Mock
+    private ModelMapper modelMapper;
     @Test
     void getOrder_WithValidData_shouldReturnOrderDTO() {
         User user = User.builder().id(1).build();

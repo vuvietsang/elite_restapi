@@ -25,7 +25,8 @@ public class ProductServiceImplement implements ProductService {
     private ProductRepository productRepository;
     @Autowired
     private CategoryRepository categoryRepository;
-    private ModelMapper modelMapper = new ModelMapper();
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Override
     public Page<ProductDTO> getAllProducts(Specification<Product> specification, Pageable pageable) {

@@ -40,13 +40,10 @@ class ProductServiceImplementTest {
     private ProductServiceImplement productService ;
 
     private Pageable pageable;
-    private ModelMapper modelMapper ;
+    @Mock
+    private ModelMapper modelMapper;
 
-    @BeforeEach
-    void setUp(){
-        pageable = PageRequest.of(0,10);
-        modelMapper = new ModelMapper();
-    }
+
 
     @Test
     void getProductById_WithValidData_ShouldReturnProductDTO() {

@@ -14,6 +14,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -46,13 +49,10 @@ class UserServiceImplementTest {
     @InjectMocks
     UserServiceImplement userService;
 
+    @Mock
     private ModelMapper modelMapper;
 
 
-    @BeforeEach
-    void setUp(){
-        modelMapper = new ModelMapper();
-    }
     @Test
     void findByUserName_WithValidData_shouldReturnUserDTO() {
         User user = new User();
@@ -75,12 +75,19 @@ class UserServiceImplementTest {
 
     @Test
     void deleteUserById_WithValidData_shouldReturnUserDTO() {
-        Optional<User> user = Optional.of(User.builder().id(1).status(true).build());
-        Mockito.when(userRepository.findById(1)).thenReturn(user);
-        UserDTO userDTO = modelMapper.map(user.get(),UserDTO.class);
-        userDTO.setStatus(false);
-        Assertions.assertEquals(userService.deleteUserById(1),userDTO);
+        User user = Mockito.mock(User.class);
+        Optional<User> userOptional = Optional.of(user);
+        when(userRepository.findById(user.getId())).thenReturn(userOptional);
+        when(userRepository.save(user)).thenReturn(user);
+        UserDTO userDTO = Mockito.mock(UserDTO.class);
+        when(userRepository.save(user)).thenReturn(user);
+        when(modelMapper.map(user,UserDTO.class)).thenReturn(userDTO);
+        verify(userRepository).save(userOptional.get());
+        Assertions.assertEquals(userService.deleteUserById(user.getId()),userDTO);
+        Assertions.assertFalse(userService.deleteUserById(user.getId()).isStatus());
     }
+
+
 
     @Test
     void addUser_WithValidData_shouldReturnUserDTO() {

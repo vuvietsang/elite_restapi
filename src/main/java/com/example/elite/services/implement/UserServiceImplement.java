@@ -47,8 +47,8 @@ public class UserServiceImplement implements UserService {
     @Autowired
     private RoleRepository roleRepository;
 
-
-    private ModelMapper modelMapper = new ModelMapper();
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Override
     public UserDTO findByUserName(String username) {
@@ -73,6 +73,7 @@ public class UserServiceImplement implements UserService {
                         .fullName(userAuthenticated.getFullName())
                         .username(userAuthenticated.getUsername())
                         .email(userAuthenticated.getEmail())
+                        .avatar(userAuthenticated.getAvatar())
                         .roleName(userAuthenticated.getRole().getRoleName())
                         .token(jwtConfig.getTokenPrefix()+token).build();
             }

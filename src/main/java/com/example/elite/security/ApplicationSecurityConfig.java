@@ -87,5 +87,4 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         return new ModelMapper();
     }
 
-
 }
