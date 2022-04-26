@@ -27,11 +27,11 @@ public class UserProductController {
     private ProductService productService;
 
     @GetMapping
-    public ResponseEntity<ResponseDTO> getAllProduct(@RequestParam Integer pageNum,
+    public ResponseEntity<ResponseDTO> getAllProduct(@RequestParam Integer pageNumber,
                                                      @RequestParam Integer pageSize,
                                                      @RequestParam String search){
             ResponseDTO  responseDTO = new ResponseDTO();
-            Pageable pageable = PageRequest.of(Optional.ofNullable(pageNum).orElse(0),Optional.ofNullable(pageSize).orElse(10));
+            Pageable pageable = PageRequest.of(Optional.ofNullable(pageNumber).orElse(0),Optional.ofNullable(pageSize).orElse(10));
             Specification spec = Utils.buildProductSpecifications(search);
             Page<ProductDTO> page = productService.getAllProducts(spec,  pageable);
             responseDTO.setData(page);

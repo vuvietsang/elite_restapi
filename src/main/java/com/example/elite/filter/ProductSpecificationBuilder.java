@@ -23,13 +23,10 @@ public class ProductSpecificationBuilder {
         if (params.size() == 0) {
             return null;
         }
-
         List<Specification> specs = params.stream()
                 .map(ProductSpecification::new)
                 .collect(Collectors.toList());
-
         Specification result = specs.get(0);
-
         for (int i = 1; i < params.size(); i++) {
             result = Specification.where(result)
                     .and(specs.get(i));

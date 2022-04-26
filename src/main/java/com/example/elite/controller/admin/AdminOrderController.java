@@ -26,10 +26,10 @@ public class AdminOrderController {
 
     @GetMapping("/orders")
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    public ResponseEntity<ResponseDTO> getAllOrders(@RequestParam int pageNum, @RequestParam int pageSize) {
+    public ResponseEntity<ResponseDTO> getAllOrders(@RequestParam int pageNumber, @RequestParam int pageSize) {
         ResponseDTO response = new ResponseDTO();
         try {
-            response.setData(this.service.getAllOrders(pageNum, pageSize));
+            response.setData(this.service.getAllOrders(pageNumber, pageSize));
             response.setSuccessMessage("GET ALL ORDERS SUCCESSFULLY");
             return ResponseEntity.ok().body(response);
         } catch (Exception e) {
@@ -56,9 +56,9 @@ public class AdminOrderController {
     }
     @GetMapping("/email/{email}")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<ResponseDTO> getOrderByEmail(@PathVariable("email") String email,@RequestParam int pageNum,@RequestParam int pageSize){
+    public ResponseEntity<ResponseDTO> getOrderByEmail(@PathVariable("email") String email,@RequestParam int pageNumber,@RequestParam int pageSize){
         ResponseDTO response = new ResponseDTO();
-            response.setData(service.getOrdersByEmail(pageNum, pageSize, email));
+            response.setData(service.getOrdersByEmail(pageNumber, pageSize, email));
             response.setSuccessMessage("GET ORDERS SUCCESSFULLY");
             return ResponseEntity.ok().body(response);
     }

@@ -29,6 +29,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.crypto.SecretKey;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -82,7 +83,6 @@ class UserServiceImplementTest {
         UserDTO userDTO = Mockito.mock(UserDTO.class);
         when(userRepository.save(user)).thenReturn(user);
         when(modelMapper.map(user,UserDTO.class)).thenReturn(userDTO);
-        verify(userRepository).save(userOptional.get());
         Assertions.assertEquals(userService.deleteUserById(user.getId()),userDTO);
         Assertions.assertFalse(userService.deleteUserById(user.getId()).isStatus());
     }
@@ -91,34 +91,48 @@ class UserServiceImplementTest {
 
     @Test
     void addUser_WithValidData_shouldReturnUserDTO() {
-        AddUserDTO addUserDTO = AddUserDTO.builder().roleName("ADMIN").username("sangvv").email("vuvietsang10a9@gmail.com").build();
-        Role role = Role.builder().roleName("ADMIN").id(1).build();
-        Mockito.when(userRepository.findUserByUsername("sangvv")).thenReturn(null);
-        Mockito.when(roleRepository.findByRoleName(role.getRoleName())).thenReturn(role);
-        User user = modelMapper.map(addUserDTO,User.class);
-        Mockito.when(userRepository.save(user)).thenReturn(user);
-        UserDTO userDTO = modelMapper.map(user,UserDTO.class);
-        Assertions.assertEquals(userService.addUser(addUserDTO),userDTO);
+        AddUserDTO user = Mockito.mock(AddUserDTO.class);
+        Role role = Mockito.mock(Role.class);
+        User userBuild =  User.builder()
+                .status(true)
+                .createDate(LocalDate.now())
+                .role(role)
+                .phone(user.getPhone())
+                .email(user.getEmail())
+                .avatar(user.getAvatar())
+                .fullName(user.getFullName())
+                .username(user.getUsername())
+                .password(passwordEncoder.encode(user.getPassword()))
+                .build();
+        UserDTO userDTO = Mockito.mock(UserDTO.class);
+        when(userRepository.findUserByUsername(user.getUsername())).thenReturn(null);
+        when(roleRepository.findByRoleName(role.getRoleName())).thenReturn(role);
+
+        when(userRepository.save(userBuild)).thenReturn(userBuild);
+        when(modelMapper.map(userBuild,UserDTO.class)).thenReturn(userDTO);
+
+        Assertions.assertEquals(userService.addUser(user),userDTO);
     }
 
     @Test
     void updateUser_WithValidData_shouldReturnUserDTO() {
-        Optional<User> user = Optional.of(User.builder().id(1).status(true).build());
-        user.get().setFullName("HIHI");
-        user.get().setEmail("vuvuvuvu@gmail.com");
-        Mockito.when(userRepository.findById(1)).thenReturn(user);
-        UserDTO userDTO = modelMapper.map(user.get(),UserDTO.class);
-        Assertions.assertEquals(userService.updateUser(user.get(),1), userDTO);
+        User user = Mockito.mock(User.class);
+        UserDTO userDTO = Mockito.mock(UserDTO.class);
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        when(userRepository.save(user)).thenReturn(user);
+        when(modelMapper.map(user,UserDTO.class)).thenReturn(userDTO);
+        Assertions.assertEquals(userService.updateUser(user,user.getId()), userDTO);
+        Assertions.assertEquals(userService.updateUser(user,user.getId()).getEmail(), userDTO.getEmail());
+        Assertions.assertEquals(userService.updateUser(user,user.getId()).getFullName(), userDTO.getFullName());
     }
 
     @Test
     void getAllUser_WithValidData_shouldReturnUserDTOPage() {
         Pageable pageable = PageRequest.of(0,10);
-        Optional<User> user1 = Optional.of(User.builder().id(1).status(true).build());
-        Optional<User> user2 = Optional.of(User.builder().id(2).status(true).build());
-        Page<User> page = new PageImpl(List.of(user1.get(),user2.get()),pageable,2);
-        Mockito.when(userRepository.findAll(pageable)).thenReturn(page);
-        Page<UserDTO> userDTOPage = page.map(user->modelMapper.map(user,UserDTO.class));
+        Page<User> userPage = Mockito.mock(Page.class);
+        Page<UserDTO> userDTOPage = Mockito.mock(Page.class);
+        Mockito.when(userRepository.findAll(pageable)).thenReturn(userPage);
+        Mockito.when(userPage.map(user-> modelMapper.map(user,UserDTO.class))).thenReturn(userDTOPage);
         Assertions.assertEquals(userService.getAllUser(pageable.getPageNumber(),pageable.getPageSize()),userDTOPage);
     }
 }

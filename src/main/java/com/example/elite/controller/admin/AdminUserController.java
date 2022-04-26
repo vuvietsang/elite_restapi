@@ -57,10 +57,10 @@ public class AdminUserController {
         }
     }
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/pageNum={num}&pageSize={size}")
-    public ResponseEntity<ResponseDTO> findAll(@PathVariable(name="num") int pageNum, @PathVariable(name="size") int pageSize){
+    @GetMapping()
+    public ResponseEntity<ResponseDTO> findAll(@RequestParam int pageNumber, @RequestParam int pageSize){
         ResponseDTO responseDTO = new ResponseDTO();
-        Page<UserDTO> users = userService.getAllUser(pageNum,pageSize);
+        Page<UserDTO> users = userService.getAllUser(pageNumber,pageSize);
             responseDTO.setData(users);
             responseDTO.setSuccessMessage("GET ALL SUCCESSFULLY");
             return ResponseEntity.ok().body(responseDTO);

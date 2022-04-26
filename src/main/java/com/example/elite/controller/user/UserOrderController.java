@@ -28,9 +28,9 @@ public class UserOrderController {
 
     @GetMapping("/myorder/{id}")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<ResponseDTO> getOrderByUserId(@PathVariable("id") int userId,@RequestParam int pageNum, @RequestParam int pageSize){
+    public ResponseEntity<ResponseDTO> getOrderByUserId(@PathVariable("id") int userId,@RequestParam int pageNumber, @RequestParam int pageSize){
             ResponseDTO response = new ResponseDTO();
-            response.setData(service.getOrderByUserId(pageNum,pageSize,userId));
+            response.setData(service.getOrderByUserId(pageNumber,pageSize,userId));
             response.setSuccessMessage("GET ORDERS SUCCESSFULLY");
             return ResponseEntity.ok().body(response);
     }

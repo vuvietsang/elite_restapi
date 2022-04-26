@@ -118,17 +118,20 @@ public class UserServiceImplement implements UserService {
         if(role==null){
             throw new com.example.elite.handle_exception.RoleNotFoundException("THIS ROLE DOES NOT EXISTED");
         }
-        User userSave = User.builder()
+        User userBuild = User.builder()
                 .status(true)
                 .createDate(LocalDate.now())
                 .role(role)
                 .phone(user.getPhone())
                 .email(user.getEmail())
+                .avatar(user.getAvatar())
                 .fullName(user.getFullName())
                 .username(user.getUsername())
                 .password(passwordEncoder.encode(user.getPassword()))
                 .build();
-        return modelMapper.map(userRepository.save(userSave), UserDTO.class);
+        User inRepo= userRepository.save(userBuild);
+        UserDTO userDTO = modelMapper.map(inRepo,UserDTO.class);
+        return userDTO;
     }
 
     @Override
