@@ -14,7 +14,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
@@ -91,23 +90,14 @@ class UserServiceImplementTest {
         AddUserDto user = Mockito.mock(AddUserDto.class);
         Role role = Mockito.mock(Role.class);
         User userBuild =  User.builder()
-                .status(true)
-                .createDate(LocalDate.now())
                 .role(role)
-                .phone(user.getPhone())
-                .email(user.getEmail())
-                .avatar(user.getAvatar())
-                .fullName(user.getFullName())
                 .username(user.getUsername())
-                .password(passwordEncoder.encode(user.getPassword()))
                 .build();
         UserDto userDTO = Mockito.mock(UserDto.class);
         when(userRepository.findUserByUsername(user.getUsername())).thenReturn(null);
         when(roleRepository.findByRoleName(role.getRoleName())).thenReturn(role);
-
         when(userRepository.save(userBuild)).thenReturn(userBuild);
         when(modelMapper.map(userBuild, UserDto.class)).thenReturn(userDTO);
-
         Assertions.assertEquals(userService.addUser(user),userDTO);
     }
 

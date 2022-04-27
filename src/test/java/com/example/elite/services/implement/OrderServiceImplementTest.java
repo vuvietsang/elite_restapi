@@ -52,34 +52,22 @@ class OrderServiceImplementTest {
     private ModelMapper modelMapper;
     @Test
     void getOrder_WithValidData_shouldReturnOrderDTO() {
-        User user = User.builder().id(1).build();
-        Optional<Orders> orders = Optional.of(Orders.builder()
-                .createDate(LocalDate.now())
-                .totalPrice(5000)
-                .id(1)
-                .status(true)
-                .user(user)
-                .build());
-        Mockito.when(orderRepository.findById(1)).thenReturn(orders);
-        OrderDto orderDTO = modelMapper.map(orders.get(), OrderDto.class);
-        Assertions.assertEquals(orderSevice.getOrderById(1), orderDTO);
+        Optional<Orders> orders = Optional.of(Mockito.mock(Orders.class));
+        Optional<OrderDto> orderDto = Optional.of(Mockito.mock(OrderDto.class));
+        Mockito.when(orderRepository.findById(orders.get().getId())).thenReturn(orders);
+        Mockito.when(modelMapper.map(orders.get(),OrderDto.class)).thenReturn(orderDto.get());
+        Assertions.assertEquals(orderSevice.getOrderById(orders.get().getId()), orderDto.get());
     }
 
     @Test
     void deleteOrder_WithValidData_shouldReturnOrderDTO() {
-        User user = User.builder().id(1).build();
-        Optional<Orders> orders = Optional.of(Orders.builder()
-                .createDate(LocalDate.now())
-                .totalPrice(5000)
-                .id(1)
-                .status(true)
-                .user(user)
-                .build());
-        Mockito.when(orderRepository.findById(1)).thenReturn(orders);
+        Optional<Orders> orders = Optional.of(Mockito.mock(Orders.class));
+        Optional<OrderDto> orderDto = Optional.of(Mockito.mock(OrderDto.class));
+        Mockito.when(orderRepository.findById(orders.get().getId())).thenReturn(orders);
         Mockito.when(orderRepository.save(orders.get())).thenReturn(orders.get());
-        OrderDto orderDTO = modelMapper.map(orders.get(), OrderDto.class);
-        orderDTO.setStatus(false);
-        Assertions.assertEquals(orderSevice.deleteOrder(1), orderDTO);
+        Mockito.when(modelMapper.map(orders.get(),OrderDto.class)).thenReturn(orderDto.get());
+        Assertions.assertEquals(orderSevice.deleteOrder(orders.get().getId()), orderDto.get());
+        Assertions.assertEquals(orderSevice.deleteOrder(orders.get().getId()).isStatus(), orderDto.get().isStatus());
     }
 
     @Test
@@ -115,21 +103,13 @@ class OrderServiceImplementTest {
     }
     @Test
     void confirmOrder_WithValidData_shouldReturnOrderDTO() {
-        User user = User.builder().id(1).build();
-        Optional<Orders> orders = Optional.of(Orders.builder()
-                .createDate(LocalDate.now())
-                .totalPrice(5000)
-                .id(1)
-                .status(true)
-                .isConfirmed(false)
-                .user(user)
-                .build());
-        Mockito.when(orderRepository.findById(1)).thenReturn(orders);
+        Optional<Orders> orders = Optional.of(Mockito.mock(Orders.class));
+        Optional<OrderDto> orderDto = Optional.of(Mockito.mock(OrderDto.class));
+        Mockito.when(orderRepository.findById(orders.get().getId())).thenReturn(orders);
         Mockito.when(orderRepository.save(orders.get())).thenReturn(orders.get());
-
-        OrderDto orderDTO = modelMapper.map(orders.get(), OrderDto.class);
-        orderDTO.setConfirmed(true);
-        Assertions.assertEquals(orderSevice.confirmOrder(1), orderDTO);
+        Mockito.when(modelMapper.map(orders.get(),OrderDto.class)).thenReturn(orderDto.get());
+        Assertions.assertEquals(orderSevice.confirmOrder(orders.get().getId()), orderDto.get());
+        Assertions.assertEquals(orderSevice.confirmOrder(orders.get().getId()).isConfirmed(), orderDto.get().isConfirmed());
     }
 
     @Test

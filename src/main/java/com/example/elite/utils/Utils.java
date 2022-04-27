@@ -8,6 +8,8 @@ import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 
@@ -17,7 +19,7 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Configurable
+@Configuration
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true)
 public class Utils {

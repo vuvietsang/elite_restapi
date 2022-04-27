@@ -19,11 +19,12 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
+
 @ExtendWith(MockitoExtension.class)
 class ProductServiceImplementTest {
     @Mock
@@ -43,10 +44,11 @@ class ProductServiceImplementTest {
 
     @Test
     void getProductById_WithValidData_ShouldReturnProductDTO() {
-        Optional<Product> product = Optional.of(Product.builder().id(1L).build());
-        Mockito.when(productRepository.findById(1L)).thenReturn(product);
-        ProductDto productDTO = modelMapper.map(product.get(), ProductDto.class);
-        assertEquals(productService.getProductById(1L),productDTO);
+        Optional<Product> product = Optional.of(Mockito.mock(Product.class));
+        Optional<ProductDto> productDto = Optional.of(Mockito.mock(ProductDto.class));
+        when(productRepository.findById(product.get().getId())).thenReturn(product);
+        when(modelMapper.map(product.get(),ProductDto.class)).thenReturn(productDto.get());
+        assertEquals(productService.getProductById(product.get().getId()),productDto.get());
     }
 
     @Test
@@ -56,65 +58,51 @@ class ProductServiceImplementTest {
         Product product1 = new Product();
         Product product2 = new Product();
         Page<Product> productPage = new PageImpl<>(List.of(product1,product2),pageable,2);
-        Mockito.when(productRepository.findAll(spec,pageable)).thenReturn(productPage);
+        when(productRepository.findAll(spec,pageable)).thenReturn(productPage);
         Page<ProductDto> productDTOPage = productPage.map(product -> modelMapper.map(product, ProductDto.class));
         Assertions.assertEquals(productService.getAllProducts(spec,pageable),productDTOPage);
     }
 
     @Test
     void addProduct_WithValidData_ShouldReturnProductDTO() {
-        //given
-        Category category = Category.builder()
-                .id(123)
-                .name("HIHI")
-                .description("thom ngon moi an nha toi day khong cho ban nua gio toi an lien")
-                .build();
-        Product product = Product.builder()
-                .name("Apple")
-                .createDate(LocalDate.now())
-                .category(category)
-                .image("hihi")
-                .price(5000)
-                .quantity(100)
-                .description("yummy")
-                .status(true).build();
-        ProductDto productDTO = modelMapper.map(product, ProductDto.class);
-        Mockito.when(productRepository.findByName("Apple")).thenReturn(null);
-        Mockito.when(categoryRepository.findByName("HIHI")).thenReturn(category);
-        Mockito.when(productRepository.save(product)).thenReturn(product);
-        Assertions.assertEquals(productService.addProduct(productDTO), productDTO);
+        Optional<Category> category =Optional.of(Mockito.mock(Category.class));
+        Optional<Product> product = Optional.of(Mockito.mock(Product.class));
+        Optional<ProductDto> productDto = Optional.of(Mockito.mock(ProductDto.class));
+
+        when(productRepository.findByName(product.get().getName())).thenReturn(null);
+        when(categoryRepository.findByName(category.get().getName())).thenReturn(category.get());
+
+        Optional<Product> productSave = Optional.of(Product.builder().name(product.get().getName()).build());
+
+        when(productRepository.save(productSave.get())).thenReturn(productSave.get());
+
+        when(modelMapper.map(productSave.get(),ProductDto.class)).thenReturn(productDto.get());
+
+        Assertions.assertEquals(productService.addProduct(productDto.get()), productDto.get());
     }
 
     @Test
     void updateProduct_WithValidData_ShouldReturnProductDTO() {
-        Optional<Product> product =Optional.of(new Product());
-        Category category = new Category();
-        category.setName("Fruits");
-        product.get().setId(1L);
-        product.get().setStatus(false);
-        product.get().setDescription("HIHI");
-        product.get().setPrice(123);
-        product.get().setImage("Image");
-        product.get().setName("Edited");
-        product.get().setCategory(category);
-        ProductDto productDTO = modelMapper.map(product.get(), ProductDto.class);
-        Mockito.when(productRepository.findById(1L)).thenReturn(product);
-        Mockito.when(categoryRepository.findByName(productDTO.getCategoryName())).thenReturn(category);
-        Mockito.when(productRepository.save(product.get())).thenReturn(product.get());
-        Assertions.assertEquals(productService.updateProduct(productDTO,1L),productDTO);
+        Optional<Product> product =Optional.of(Mockito.mock(Product.class));
+        Optional<Category> category =Optional.of(Mockito.mock(Category.class));
+        Optional<ProductDto> productDto =Optional.of(Mockito.mock(ProductDto.class));
+
+        when(productRepository.findById(product.get().getId())).thenReturn(product);
+        when(categoryRepository.findByName(productDto.get().getCategoryName())).thenReturn(category.get());
+
+        when(productRepository.save(product.get())).thenReturn(product.get());
+        when(modelMapper.map(product.get(),ProductDto.class)).thenReturn(productDto.get());
+        Assertions.assertEquals(productService.updateProduct(productDto.get(),product.get().getId()),productDto.get());
     }
     @Test
     void deleteProduct_WithValidData_ShouldReturnProductDTO() {
-        Optional<Product> product = Optional.of(new Product());
-        product.get().setId(1L);
-        product.get().setStatus(true);
+        Optional<Product> product = Optional.of(Mockito.mock(Product.class));
+        Optional<ProductDto> productDto = Optional.of(Mockito.mock(ProductDto.class));
+        when(productRepository.findById(product.get().getId())).thenReturn(product);
+        when(productRepository.save(product.get())).thenReturn(product.get());
+        when(modelMapper.map(product.get(),ProductDto.class)).thenReturn(productDto.get());
 
-        Mockito.when(productRepository.findById(product.get().getId())).thenReturn(product);
-        Mockito.when(productRepository.save(product.get())).thenReturn(product.get());
-        ProductDto dto = modelMapper.map(product.get() , ProductDto.class);
-        dto.setStatus(false);
-
-        Assertions.assertEquals(productService.deleteProduct(1L) ,dto);
-        Assertions.assertFalse(productService.deleteProduct(1L).isStatus() );
+        Assertions.assertEquals(productService.deleteProduct(product.get().getId()) ,productDto.get());
+        Assertions.assertEquals(productService.deleteProduct(product.get().getId()).isStatus() ,productDto.get().isStatus());
     }
 }
