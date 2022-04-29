@@ -1,4 +1,4 @@
-package com.example.elite.handle_exception;
+package com.example.elite.exceptions;
 
 public class RoleNotFoundException extends RuntimeException{
     public RoleNotFoundException(String message) {

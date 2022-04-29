@@ -1,6 +1,7 @@
-package com.example.elite.handle_exception;
+package com.example.elite.exceptions.handler;
 
 import com.example.elite.dto.ResponseDto;
+import com.example.elite.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
@@ -91,8 +92,8 @@ public class ExceptionHandlers extends RuntimeException {
         dto.setErrorMessage(exception.getMessage());
         return ResponseEntity.badRequest().body(dto);
     }
-    @ExceptionHandler(value = {com.example.elite.handle_exception.RoleNotFoundException.class})
-    public ResponseEntity<Object> roleNotFoundException(com.example.elite.handle_exception.RoleNotFoundException exception) {
+    @ExceptionHandler(value = {com.example.elite.exceptions.RoleNotFoundException.class})
+    public ResponseEntity<Object> roleNotFoundException(com.example.elite.exceptions.RoleNotFoundException exception) {
         ResponseDto dto = new ResponseDto();
         dto.setErrorMessage(exception.getMessage());
         return ResponseEntity.badRequest().body(dto);

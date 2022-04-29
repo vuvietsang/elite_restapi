@@ -17,14 +17,13 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserOrderController {
     private final OrderSevice service;
-
     @PostMapping("/checkout")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<ResponseDto> checkout(@Validated @RequestBody OrderDetailDto[] orderDetails) {
         ResponseDto<OrderDto> response = new ResponseDto();
-            response.setData(this.service.checkout(orderDetails));
-            response.setSuccessMessage("ORDER SUCCESSFULLY");
-            return ResponseEntity.ok().body(response);
+        response.setData(this.service.checkout(orderDetails));
+        response.setSuccessMessage("ORDER SUCCESSFULLY");
+        return ResponseEntity.ok().body(response);
     }
 
     @GetMapping("/myorder/{id}")

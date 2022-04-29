@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
@@ -45,7 +46,6 @@ class UserServiceImplementTest {
     private RoleRepository roleRepository;
     @InjectMocks
     UserServiceImplement userService;
-
     @Mock
     private ModelMapper modelMapper;
 
@@ -119,7 +119,9 @@ class UserServiceImplementTest {
         Page<User> userPage = Mockito.mock(Page.class);
         Page<UserDto> userDTOPage = Mockito.mock(Page.class);
         Mockito.when(userRepository.findAll(pageable)).thenReturn(userPage);
+
         Mockito.when(userPage.map(user-> modelMapper.map(user, UserDto.class))).thenReturn(userDTOPage);
+        var test = userService.getAllUser(0,10);
         Assertions.assertEquals(userService.getAllUser(pageable.getPageNumber(),pageable.getPageSize()),userDTOPage);
     }
 }

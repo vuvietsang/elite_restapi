@@ -6,8 +6,8 @@ import com.example.elite.dto.LoginResponseDto;
 import com.example.elite.dto.UserDto;
 import com.example.elite.entities.Role;
 import com.example.elite.entities.User;
-import com.example.elite.handle_exception.UserDisableException;
-import com.example.elite.handle_exception.UserNameExistException;
+import com.example.elite.exceptions.UserDisableException;
+import com.example.elite.exceptions.UserNameExistException;
 import com.example.elite.jwt.JwtConfig;
 import com.example.elite.repository.RoleRepository;
 import com.example.elite.repository.UserRepository;
@@ -90,13 +90,11 @@ public class UserServiceImplement implements UserService {
         if(checkUser!=null){
             throw new UserNameExistException("THIS USERNAME ALREADY EXISTED!");
         }
-        if (checkUser == null) {
-            User userTmp = User.builder().username(user.getUsername()).email(user.getEmail()).fullName(user.getFullName()).role(role).phone(user.getPhone())
+            User userTmp = User.builder().username(user.getUsername()).email(user.getEmail()).fullName(user.getFullName()).role(role).avatar(user.getAvatar()).phone(user.getPhone())
                     .password(passwordEncoder.encode(user.getPassword())).status(true).createDate(LocalDate.now()).build();
             userRepository.save(userTmp);
             LoginDto loginDTO = new LoginDto(user.getUsername(), user.getPassword());
             loginResponseDTO = login(loginDTO);
-        }
         return loginResponseDTO;
     }
 
@@ -116,7 +114,7 @@ public class UserServiceImplement implements UserService {
         }
         Role role = roleRepository.findByRoleName(user.getRoleName());
         if(role==null){
-            throw new com.example.elite.handle_exception.RoleNotFoundException("THIS ROLE DOES NOT EXISTED");
+            throw new com.example.elite.exceptions.RoleNotFoundException("THIS ROLE DOES NOT EXISTED");
         }
         User userBuild = User.builder()
                 .status(true)

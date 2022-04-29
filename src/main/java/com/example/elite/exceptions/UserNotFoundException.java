@@ -1,4 +1,4 @@
-package com.example.elite.handle_exception;
+package com.example.elite.exceptions;
 
 public class UserNotFoundException extends RuntimeException{
     public UserNotFoundException(String message){

@@ -1,4 +1,4 @@
-package com.example.elite.handle_exception;
+package com.example.elite.exceptions;
 
 public class UsernameOrPasswordNotFoundException extends RuntimeException{
     public UsernameOrPasswordNotFoundException(String message) {

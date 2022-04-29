@@ -3,8 +3,8 @@ package com.example.elite.services.implement;
 import com.example.elite.dto.ProductDto;
 import com.example.elite.entities.Category;
 import com.example.elite.entities.Product;
-import com.example.elite.handle_exception.CategoryNotFoundException;
-import com.example.elite.handle_exception.ProductNameExistException;
+import com.example.elite.exceptions.CategoryNotFoundException;
+import com.example.elite.exceptions.ProductNameExistException;
 import com.example.elite.repository.CategoryRepository;
 import com.example.elite.repository.ProductRepository;
 import com.example.elite.services.ProductService;
@@ -60,7 +60,6 @@ public class ProductServiceImplement implements ProductService {
     @Override
     public ProductDto updateProduct(ProductDto dto, Long productId) throws NoSuchElementException {
         Optional<Product> product = productRepository.findById(productId);
-
         Category category =categoryRepository.findByName(dto.getCategoryName());
         if(category==null){
             throw new CategoryNotFoundException("THIS CATEGORY NAME NOT FOUND!");

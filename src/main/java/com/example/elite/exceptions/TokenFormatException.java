@@ -1,4 +1,4 @@
-package com.example.elite.handle_exception;
+package com.example.elite.exceptions;
 
 public class TokenFormatException extends RuntimeException{
     public TokenFormatException(String message) {
