@@ -39,6 +39,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/user/login",
                         "/products",
                         "/products/{id}",
+                        "/products/rating/{id}",
                         "/swagger-resources/**",
                         "/v2/api-docs",
                         "/webjars/**",
