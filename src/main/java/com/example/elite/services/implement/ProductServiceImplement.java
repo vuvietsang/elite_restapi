@@ -38,12 +38,12 @@ public class ProductServiceImplement implements ProductService {
     @Override
     public ProductDto addProduct(ProductDto dto) {
         Product productExist = productRepository.findByName(dto.getName());
+        if(productExist!=null){
+            throw new ProductNameExistException("THIS PRODUCT NAME EXISTED!");
+        }
         Category category =categoryRepository.findByName(dto.getCategoryName());
         if(category==null){
             throw new CategoryNotFoundException("CATEGORY NOT FOUND!");
-        }
-        if(productExist!=null){
-            throw new ProductNameExistException("THIS PRODUCT NAME EXISTED!");
         }
         Product product = Product.builder()
                 .category(category)

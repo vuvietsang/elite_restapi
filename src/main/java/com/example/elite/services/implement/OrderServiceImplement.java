@@ -21,6 +21,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -65,6 +67,7 @@ public class OrderServiceImplement implements OrderSevice {
         double totalPrice = 0;
         Orders order = Orders.builder().createDate(LocalDate.now()).status(false).user(userInDb).build();
         orderRepository.save(order);
+        List<OrderDetail> orderDetailList  = new ArrayList<>();
         for (int i = 0; i < orderDetails.length; i++) {
             Product product = this.productRepository
                     .findById(orderDetails[i].getProductId()).get();
@@ -73,8 +76,9 @@ public class OrderServiceImplement implements OrderSevice {
                 totalPrice+=price;
                 OrderDetail oDetails = OrderDetail.builder().orders(order).product(product).quantity(quantity)
                         .price(price).build();
-                this.orderDetailsRepository.save(oDetails);
+                orderDetailList.add(oDetails);
         }
+        this.orderDetailsRepository.saveAll(orderDetailList);
         order.setTotalPrice(totalPrice);
         return modelMapper.map(orderRepository.save(order), OrderDto.class);
     }

@@ -83,12 +83,12 @@ public class UserServiceImplement implements UserService {
     public LoginResponseDto register(User user) throws UsernameNotFoundException, RoleNotFoundException {
         LoginResponseDto loginResponseDTO =null;
         User checkUser = userRepository.findUserByUsername(user.getUsername());
+        if(checkUser!=null){
+            throw new UserNameExistException("THIS USERNAME ALREADY EXISTED!");
+        }
         Role role =roleRepository.findByRoleName("USER");
         if(role==null){
             throw new RoleNotFoundException("ROLE NOT FOUND!");
-        }
-        if(checkUser!=null){
-            throw new UserNameExistException("THIS USERNAME ALREADY EXISTED!");
         }
             User userTmp = User.builder().username(user.getUsername()).email(user.getEmail()).fullName(user.getFullName()).role(role).avatar(user.getAvatar()).phone(user.getPhone())
                     .password(passwordEncoder.encode(user.getPassword())).status(true).createDate(LocalDate.now()).build();
