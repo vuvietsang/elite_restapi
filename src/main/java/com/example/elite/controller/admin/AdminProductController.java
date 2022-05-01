@@ -21,27 +21,29 @@ public class AdminProductController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}")
-    public ResponseEntity<ResponseDto> updateProduct(@Valid @RequestBody ProductDto dto, @PathVariable(name="id")  Long id){
+    public ResponseEntity<ResponseDto> updateProduct(@Valid @RequestBody ProductDto dto, @PathVariable(name = "id") Long id) {
         ResponseDto<ProductDto> responseDTO = new ResponseDto();
-        ProductDto dtoReturn = productService.updateProduct(dto,id);
-            responseDTO.setSuccessMessage("UPDATE PRODUCT SUCCESSFULLY!");
-            responseDTO.setData(dtoReturn);
+        ProductDto dtoReturn = productService.updateProduct(dto, id);
+        responseDTO.setSuccessMessage("UPDATE PRODUCT SUCCESSFULLY!");
+        responseDTO.setData(dtoReturn);
         return ResponseEntity.ok().body(responseDTO);
     }
+
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseDto> deleteProduct(@PathVariable(name="id")  Long id){
+    public ResponseEntity<ResponseDto> deleteProduct(@PathVariable(name = "id") Long id) {
         ResponseDto<ProductDto> responseDTO = new ResponseDto();
         responseDTO.setSuccessMessage("DELETE PRODUCT SUCCESSFULLY!");
         responseDTO.setData(productService.deleteProduct(id));
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }
+
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<ResponseDto> addNewProduct(@Validated @RequestBody ProductDto dto){
+    public ResponseEntity<ResponseDto> addNewProduct(@Validated @RequestBody ProductDto dto) {
         ResponseDto<ProductDto> responseDTO = new ResponseDto();
         ProductDto dtoTMp = productService.addProduct(dto);
-        if(dtoTMp!=null){
+        if (dtoTMp != null) {
             responseDTO.setSuccessMessage("ADD PRODUCT SUCCESSFULLY!");
             responseDTO.setData(dtoTMp);
         }

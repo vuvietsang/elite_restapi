@@ -38,11 +38,11 @@ public class ProductServiceImplement implements ProductService {
     @Override
     public ProductDto addProduct(ProductDto dto) {
         Product productExist = productRepository.findByName(dto.getName());
-        if(productExist!=null){
+        if (productExist != null) {
             throw new ProductNameExistException("THIS PRODUCT NAME EXISTED!");
         }
-        Category category =categoryRepository.findByName(dto.getCategoryName());
-        if(category==null){
+        Category category = categoryRepository.findByName(dto.getCategoryName());
+        if (category == null) {
             throw new CategoryNotFoundException("CATEGORY NOT FOUND!");
         }
         Product product = Product.builder()
@@ -60,8 +60,8 @@ public class ProductServiceImplement implements ProductService {
     @Override
     public ProductDto updateProduct(ProductDto dto, Long productId) throws NoSuchElementException {
         Optional<Product> product = productRepository.findById(productId);
-        Category category =categoryRepository.findByName(dto.getCategoryName());
-        if(category==null){
+        Category category = categoryRepository.findByName(dto.getCategoryName());
+        if (category == null) {
             throw new CategoryNotFoundException("THIS CATEGORY NAME NOT FOUND!");
         }
         product.get().setCategory(category);
@@ -76,10 +76,10 @@ public class ProductServiceImplement implements ProductService {
     }
 
     @Override
-    public ProductDto deleteProduct(Long productId)  throws NoSuchElementException {
+    public ProductDto deleteProduct(Long productId) throws NoSuchElementException {
         Optional<Product> product = productRepository.findById(productId);
         product.get().setStatus(false);
-        return modelMapper.map(productRepository.save(product.get()), ProductDto.class) ;
+        return modelMapper.map(productRepository.save(product.get()), ProductDto.class);
     }
 
     @Override

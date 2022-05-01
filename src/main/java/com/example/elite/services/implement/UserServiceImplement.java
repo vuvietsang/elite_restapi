@@ -53,7 +53,7 @@ public class UserServiceImplement implements UserService {
     @Override
     public UserDto findByUserName(String username) {
         User user = userRepository.findUserByUsername(username);
-        if(user==null) throw new UsernameNotFoundException("USER NAME NOT FOUND!");
+        if (user == null) throw new UsernameNotFoundException("USER NAME NOT FOUND!");
         return modelMapper.map(user, UserDto.class);
     }
 
@@ -63,38 +63,39 @@ public class UserServiceImplement implements UserService {
         LoginResponseDto loginResponseDTO = null;
         Authentication authenticate = authenticationManager.authenticate(authentication);
         if (authenticate.isAuthenticated()) {
-                User userAuthenticated = userRepository.findUserByUsername(user.getUsername());
-                if(!userAuthenticated.isStatus()){
-                    throw new UserDisableException("THIS USER IS NOT AVAILABLE AT THIS TIME");
-                }
-                String token = Utils.buildJWT(authenticate,userAuthenticated,secretKey,jwtConfig);
-                loginResponseDTO = LoginResponseDto.builder()
-                        .userId(userAuthenticated.getId())
-                        .fullName(userAuthenticated.getFullName())
-                        .username(userAuthenticated.getUsername())
-                        .email(userAuthenticated.getEmail())
-                        .avatar(userAuthenticated.getAvatar())
-                        .roleName(userAuthenticated.getRole().getRoleName())
-                        .token(jwtConfig.getTokenPrefix()+token).build();
+            User userAuthenticated = userRepository.findUserByUsername(user.getUsername());
+            if (!userAuthenticated.isStatus()) {
+                throw new UserDisableException("THIS USER IS NOT AVAILABLE AT THIS TIME");
             }
+            String token = Utils.buildJWT(authenticate, userAuthenticated, secretKey, jwtConfig);
+            loginResponseDTO = LoginResponseDto.builder()
+                    .userId(userAuthenticated.getId())
+                    .fullName(userAuthenticated.getFullName())
+                    .username(userAuthenticated.getUsername())
+                    .email(userAuthenticated.getEmail())
+                    .avatar(userAuthenticated.getAvatar())
+                    .roleName(userAuthenticated.getRole().getRoleName())
+                    .token(jwtConfig.getTokenPrefix() + token).build();
+        }
         return loginResponseDTO;
     }
+
     @Override
     public LoginResponseDto register(User user) throws UsernameNotFoundException, RoleNotFoundException {
-        LoginResponseDto loginResponseDTO =null;
+        LoginResponseDto loginResponseDTO = null;
         User checkUser = userRepository.findUserByUsername(user.getUsername());
-        if(checkUser!=null){
+        if (checkUser != null) {
             throw new UserNameExistException("THIS USERNAME ALREADY EXISTED!");
         }
-        Role role =roleRepository.findByRoleName("USER");
-        if(role==null){
+        Role role = roleRepository.findByRoleName("USER");
+        if (role == null) {
             throw new RoleNotFoundException("ROLE NOT FOUND!");
         }
-            User userTmp = User.builder().username(user.getUsername()).email(user.getEmail()).fullName(user.getFullName()).role(role).avatar(user.getAvatar()).phone(user.getPhone())
-                    .password(passwordEncoder.encode(user.getPassword())).status(true).createDate(LocalDate.now()).build();
-            userRepository.save(userTmp);
-            LoginDto loginDTO = new LoginDto(user.getUsername(), user.getPassword());
-            loginResponseDTO = login(loginDTO);
+        User userTmp = User.builder().username(user.getUsername()).email(user.getEmail()).fullName(user.getFullName()).role(role).avatar(user.getAvatar()).phone(user.getPhone())
+                .password(passwordEncoder.encode(user.getPassword())).status(true).createDate(LocalDate.now()).build();
+        userRepository.save(userTmp);
+        LoginDto loginDTO = new LoginDto(user.getUsername(), user.getPassword());
+        loginResponseDTO = login(loginDTO);
         return loginResponseDTO;
     }
 
@@ -106,6 +107,7 @@ public class UserServiceImplement implements UserService {
         UserDto userDTO = modelMapper.map(user.get(), UserDto.class);
         return userDTO;
     }
+
     @Override
     public UserDto addUser(AddUserDto user) {
         User userTmp = userRepository.findUserByUsername(user.getUsername());
@@ -113,7 +115,7 @@ public class UserServiceImplement implements UserService {
             throw new UserNameExistException("THIS USERNAME ALREADY EXISTED!");
         }
         Role role = roleRepository.findByRoleName(user.getRoleName());
-        if(role==null){
+        if (role == null) {
             throw new com.example.elite.exceptions.RoleNotFoundException("THIS ROLE DOES NOT EXISTED");
         }
         User userBuild = User.builder()
@@ -127,7 +129,7 @@ public class UserServiceImplement implements UserService {
                 .username(user.getUsername())
                 .password(passwordEncoder.encode(user.getPassword()))
                 .build();
-        User inRepo= userRepository.save(userBuild);
+        User inRepo = userRepository.save(userBuild);
         UserDto userDTO = modelMapper.map(inRepo, UserDto.class);
         return userDTO;
     }
@@ -146,7 +148,7 @@ public class UserServiceImplement implements UserService {
     public Page<UserDto> getAllUser(int pageNum, int pageSize) {
         Pageable pageable = PageRequest.of(pageNum, pageSize);
         Page<User> pageUser = userRepository.findAll(pageable);
-        Page<UserDto> pageUserDTO = pageUser.map(user-> modelMapper.map(user, UserDto.class));
+        Page<UserDto> pageUserDTO = pageUser.map(user -> modelMapper.map(user, UserDto.class));
         return pageUserDTO;
     }
 }

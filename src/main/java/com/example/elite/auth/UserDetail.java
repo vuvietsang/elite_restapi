@@ -11,12 +11,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
 public class UserDetail implements UserDetails {
     private User user;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         SimpleGrantedAuthority authorities = new SimpleGrantedAuthority(user.getRole().getRoleName());
@@ -24,6 +26,7 @@ public class UserDetail implements UserDetails {
         list.add(authorities);
         return list;
     }
+
     @Override
     public String getPassword() {
         return user.getPassword();

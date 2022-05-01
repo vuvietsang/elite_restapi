@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserOrderController {
     private final OrderSevice service;
+
     @PostMapping("/checkout")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<ResponseDto> checkout(@Validated @RequestBody OrderDetailDto[] orderDetails) {
@@ -28,10 +29,10 @@ public class UserOrderController {
 
     @GetMapping("/myorder/{id}")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<ResponseDto> getOrderByUserId(@PathVariable("id") int userId, @RequestParam int pageNumber, @RequestParam int pageSize){
-            ResponseDto<Page<OrderDto>> response = new ResponseDto();
-            response.setData(service.getOrderByUserId(pageNumber,pageSize,userId));
-            response.setSuccessMessage("GET ORDERS SUCCESSFULLY");
-            return ResponseEntity.ok().body(response);
+    public ResponseEntity<ResponseDto> getOrderByUserId(@PathVariable("id") int userId, @RequestParam int pageNumber, @RequestParam int pageSize) {
+        ResponseDto<Page<OrderDto>> response = new ResponseDto();
+        response.setData(service.getOrderByUserId(pageNumber, pageSize, userId));
+        response.setSuccessMessage("GET ORDERS SUCCESSFULLY");
+        return ResponseEntity.ok().body(response);
     }
 }

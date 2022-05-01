@@ -2,7 +2,6 @@ package com.example.elite.controller.admin;
 
 import com.example.elite.dto.OrderDto;
 import com.example.elite.dto.ResponseDto;
-import com.example.elite.entities.Orders;
 import com.example.elite.services.OrderSevice;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,10 +20,10 @@ public class AdminOrderController {
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResponseDto> deleteOrder(@PathVariable("id") int orderId) {
-            ResponseDto<OrderDto> response = new ResponseDto();
-            response.setData(this.service.deleteOrder(orderId));
-            response.setSuccessMessage("DELETE SUCCESSFULLY");
-            return ResponseEntity.ok().body(response);
+        ResponseDto<OrderDto> response = new ResponseDto();
+        response.setData(this.service.deleteOrder(orderId));
+        response.setSuccessMessage("DELETE SUCCESSFULLY");
+        return ResponseEntity.ok().body(response);
     }
 
     @GetMapping("/orders")
@@ -45,24 +44,26 @@ public class AdminOrderController {
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<ResponseDto> confirmOrder(@PathVariable("id") int orderId) {
         ResponseDto<OrderDto> response = new ResponseDto();
-            response.setData(this.service.confirmOrder(orderId));
-            response.setSuccessMessage("CONFIRM ORDER SUCCESSFULLY");
-            return ResponseEntity.ok().body(response);
+        response.setData(this.service.confirmOrder(orderId));
+        response.setSuccessMessage("CONFIRM ORDER SUCCESSFULLY");
+        return ResponseEntity.ok().body(response);
     }
+
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    public ResponseEntity<ResponseDto> getOrderById(@PathVariable("id") int orderId){
+    public ResponseEntity<ResponseDto> getOrderById(@PathVariable("id") int orderId) {
         ResponseDto<OrderDto> response = new ResponseDto();
         response.setData(service.getOrderById(orderId));
         response.setSuccessMessage("GET ORDER SUCCESSFULLY");
-            return ResponseEntity.ok().body(response);
+        return ResponseEntity.ok().body(response);
     }
+
     @GetMapping("/email/{email}")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<ResponseDto> getOrderByEmail(@PathVariable("email") String email, @RequestParam int pageNumber, @RequestParam int pageSize){
+    public ResponseEntity<ResponseDto> getOrderByEmail(@PathVariable("email") String email, @RequestParam int pageNumber, @RequestParam int pageSize) {
         ResponseDto<Page<OrderDto>> response = new ResponseDto();
-            response.setData(service.getOrdersByEmail(pageNumber, pageSize, email));
-            response.setSuccessMessage("GET ORDERS SUCCESSFULLY");
-            return ResponseEntity.ok().body(response);
+        response.setData(service.getOrdersByEmail(pageNumber, pageSize, email));
+        response.setSuccessMessage("GET ORDERS SUCCESSFULLY");
+        return ResponseEntity.ok().body(response);
     }
 }

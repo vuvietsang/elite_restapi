@@ -1,11 +1,10 @@
 package com.example.elite.services;
 
 
-import com.example.elite.dto.OrderDto;
 import com.example.elite.dto.OrderDetailDto;
+import com.example.elite.dto.OrderDto;
 import com.example.elite.entities.Orders;
 import org.springframework.data.domain.Page;
-
 
 
 public interface OrderSevice {

@@ -18,11 +18,11 @@ import java.util.Objects;
 @Builder
 public class ProductDto {
     private long id;
-    @Size(min=3)
+    @Size(min = 3)
     private String name;
     @Max(1000)
     private int quantity;
-    @Size(min=10)
+    @Size(min = 10)
     private String description;
     @Min(100)
     private double price;

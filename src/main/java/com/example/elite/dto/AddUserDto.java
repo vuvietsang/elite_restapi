@@ -23,7 +23,7 @@ public class AddUserDto {
     private String roleName;
     @Size(min = 9)
     private String phone;
-    @Size(min = 6,message = "Password should have at least 6 characters!")
+    @Size(min = 6, message = "Password should have at least 6 characters!")
     private String password;
     private String avatar;
 }

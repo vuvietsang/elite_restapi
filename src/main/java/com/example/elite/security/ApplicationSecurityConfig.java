@@ -29,7 +29,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final ApplicationUserService applicationUserService;
-    private  JwtConfig jwtConfig;
+    private JwtConfig jwtConfig;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).

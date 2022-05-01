@@ -1,7 +1,7 @@
 package com.example.elite.services.implement;
 
-import com.example.elite.dto.OrderDto;
 import com.example.elite.dto.OrderDetailDto;
+import com.example.elite.dto.OrderDto;
 import com.example.elite.entities.OrderDetail;
 import com.example.elite.entities.Orders;
 import com.example.elite.entities.Product;
@@ -50,12 +50,13 @@ class OrderServiceImplementTest {
 
     @Mock
     private ModelMapper modelMapper;
+
     @Test
     void getOrder_WithValidData_shouldReturnOrderDTO() {
         Optional<Orders> orders = Optional.of(Mockito.mock(Orders.class));
         Optional<OrderDto> orderDto = Optional.of(Mockito.mock(OrderDto.class));
         Mockito.when(orderRepository.findById(orders.get().getId())).thenReturn(orders);
-        Mockito.when(modelMapper.map(orders.get(),OrderDto.class)).thenReturn(orderDto.get());
+        Mockito.when(modelMapper.map(orders.get(), OrderDto.class)).thenReturn(orderDto.get());
         Assertions.assertEquals(orderSevice.getOrderById(orders.get().getId()), orderDto.get());
     }
 
@@ -65,7 +66,7 @@ class OrderServiceImplementTest {
         Optional<OrderDto> orderDto = Optional.of(Mockito.mock(OrderDto.class));
         Mockito.when(orderRepository.findById(orders.get().getId())).thenReturn(orders);
         Mockito.when(orderRepository.save(orders.get())).thenReturn(orders.get());
-        Mockito.when(modelMapper.map(orders.get(),OrderDto.class)).thenReturn(orderDto.get());
+        Mockito.when(modelMapper.map(orders.get(), OrderDto.class)).thenReturn(orderDto.get());
         Assertions.assertEquals(orderSevice.deleteOrder(orders.get().getId()), orderDto.get());
         Assertions.assertEquals(orderSevice.deleteOrder(orders.get().getId()).isStatus(), orderDto.get().isStatus());
     }
@@ -83,31 +84,32 @@ class OrderServiceImplementTest {
         Orders order = Orders.builder().createDate(LocalDate.now()).status(false).user(user).build();
         Mockito.when(orderRepository.save(order)).thenReturn(order);
 
-        OrderDetailDto[] orderDetailDTO ={OrderDetailDto.builder().productId(1L).quantity(10).build(), OrderDetailDto.builder().productId(2L).quantity(10).build()};
+        OrderDetailDto[] orderDetailDTO = {OrderDetailDto.builder().productId(1L).quantity(10).build(), OrderDetailDto.builder().productId(2L).quantity(10).build()};
         Mockito.when(productRepository.findById(orderDetailDTO[0].getProductId())).thenReturn(product);
         Mockito.when(productRepository.findById(orderDetailDTO[1].getProductId())).thenReturn(product1);
 
         OrderDetail oDetails = OrderDetail.builder().orders(order).product(product.get()).quantity(product.get().getQuantity())
                 .price(product.get().getPrice()).build();
         Mockito.when(orderDetailsRepository.save(oDetails)).thenReturn(oDetails);
-        totalPrice += oDetails.getPrice()*oDetails.getQuantity();
+        totalPrice += oDetails.getPrice() * oDetails.getQuantity();
 
         OrderDetail oDetails1 = OrderDetail.builder().orders(order).product(product.get()).quantity(product.get().getQuantity())
                 .price(product.get().getPrice()).build();
         Mockito.when(orderDetailsRepository.save(oDetails1)).thenReturn(oDetails1);
-        totalPrice += oDetails1.getPrice()*oDetails.getQuantity();
+        totalPrice += oDetails1.getPrice() * oDetails.getQuantity();
 
         order.setTotalPrice(totalPrice);
         OrderDto orderDTO = modelMapper.map(order, OrderDto.class);
-        Assertions.assertEquals(orderSevice.checkout(orderDetailDTO),orderDTO);
+        Assertions.assertEquals(orderSevice.checkout(orderDetailDTO), orderDTO);
     }
+
     @Test
     void confirmOrder_WithValidData_shouldReturnOrderDTO() {
         Optional<Orders> orders = Optional.of(Mockito.mock(Orders.class));
         Optional<OrderDto> orderDto = Optional.of(Mockito.mock(OrderDto.class));
         Mockito.when(orderRepository.findById(orders.get().getId())).thenReturn(orders);
         Mockito.when(orderRepository.save(orders.get())).thenReturn(orders.get());
-        Mockito.when(modelMapper.map(orders.get(),OrderDto.class)).thenReturn(orderDto.get());
+        Mockito.when(modelMapper.map(orders.get(), OrderDto.class)).thenReturn(orderDto.get());
         Assertions.assertEquals(orderSevice.confirmOrder(orders.get().getId()), orderDto.get());
         Assertions.assertEquals(orderSevice.confirmOrder(orders.get().getId()).isConfirmed(), orderDto.get().isConfirmed());
     }

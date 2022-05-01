@@ -20,21 +20,23 @@ import javax.management.relation.RoleNotFoundException;
 @RequiredArgsConstructor
 public class UserController {
     private UserService userService;
+
     @PostMapping("/login")
-    public ResponseEntity<ResponseDto> login(@Validated @RequestBody LoginDto user){
+    public ResponseEntity<ResponseDto> login(@Validated @RequestBody LoginDto user) {
         ResponseDto<LoginResponseDto> responseDTO = new ResponseDto();
-        LoginResponseDto loginResponseDTO=null;
+        LoginResponseDto loginResponseDTO = null;
         loginResponseDTO = userService.login(user);
         responseDTO.setData(loginResponseDTO);
         responseDTO.setSuccessMessage("LOGIN_SUCCESS");
         return ResponseEntity.ok().body(responseDTO);
     }
+
     @PostMapping("/register")
     public ResponseEntity<ResponseDto> register(@Validated @RequestBody User user) throws RoleNotFoundException {
         ResponseDto<LoginResponseDto> responseDTO = new ResponseDto();
         LoginResponseDto loginResponseDTO = userService.register(user);
-            responseDTO.setData(loginResponseDTO);
-            responseDTO.setSuccessMessage("REGISTER_SUCCESS");
-            return ResponseEntity.ok().body(responseDTO);
-        }
+        responseDTO.setData(loginResponseDTO);
+        responseDTO.setSuccessMessage("REGISTER_SUCCESS");
+        return ResponseEntity.ok().body(responseDTO);
+    }
 }

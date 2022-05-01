@@ -1,7 +1,7 @@
 package com.example.elite.services.implement;
 
-import com.example.elite.dto.OrderDto;
 import com.example.elite.dto.OrderDetailDto;
+import com.example.elite.dto.OrderDto;
 import com.example.elite.entities.OrderDetail;
 import com.example.elite.entities.Orders;
 import com.example.elite.entities.Product;
@@ -67,16 +67,16 @@ public class OrderServiceImplement implements OrderSevice {
         double totalPrice = 0;
         Orders order = Orders.builder().createDate(LocalDate.now()).status(false).user(userInDb).build();
         orderRepository.save(order);
-        List<OrderDetail> orderDetailList  = new ArrayList<>();
+        List<OrderDetail> orderDetailList = new ArrayList<>();
         for (int i = 0; i < orderDetails.length; i++) {
             Product product = this.productRepository
                     .findById(orderDetails[i].getProductId()).get();
             int quantity = orderDetails[i].getQuantity();
-                double price = quantity * product.getPrice();
-                totalPrice+=price;
-                OrderDetail oDetails = OrderDetail.builder().orders(order).product(product).quantity(quantity)
-                        .price(price).build();
-                orderDetailList.add(oDetails);
+            double price = quantity * product.getPrice();
+            totalPrice += price;
+            OrderDetail oDetails = OrderDetail.builder().orders(order).product(product).quantity(quantity)
+                    .price(price).build();
+            orderDetailList.add(oDetails);
         }
         this.orderDetailsRepository.saveAll(orderDetailList);
         order.setTotalPrice(totalPrice);
@@ -93,7 +93,7 @@ public class OrderServiceImplement implements OrderSevice {
 
     @Override
     public Page<OrderDto> getAllOrders(int pageNum, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNum,pageSize);
+        Pageable pageable = PageRequest.of(pageNum, pageSize);
         Page<Orders> pageOrders = orderRepository.findAll(pageable);
         Page<OrderDto> orderDTOPage = pageOrders.map(order -> modelMapper.map(order, OrderDto.class));
         return orderDTOPage;
@@ -101,14 +101,15 @@ public class OrderServiceImplement implements OrderSevice {
 
     @Override
     public Page<OrderDto> getOrderByUserId(int pageNum, int pageSize, int userId) {
-        Pageable pageable = PageRequest.of(pageNum,pageSize);
+        Pageable pageable = PageRequest.of(pageNum, pageSize);
         Page<Orders> pageOrders = orderRepository.getOrdersByUserId(pageable, userId);
         Page<OrderDto> orderDTOPage = pageOrders.map(order -> modelMapper.map(order, OrderDto.class));
         return orderDTOPage;
     }
+
     @Override
     public Page<OrderDto> getOrdersByEmail(int pageNum, int pageSize, String email) {
-        Pageable pageable = PageRequest.of(pageNum,pageSize);
+        Pageable pageable = PageRequest.of(pageNum, pageSize);
         Page<Orders> pageOrders = orderRepository.getOrdersByUserEmail(pageable, email);
         Page<OrderDto> orderDTOPage = pageOrders.map(order -> modelMapper.map(order, OrderDto.class));
         return orderDTOPage;
