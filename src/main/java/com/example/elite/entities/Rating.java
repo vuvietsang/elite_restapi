@@ -23,4 +23,7 @@ public class Rating {
 
     @ManyToOne
     Product product = new Product();
+    @ManyToOne
+    User user = new User();
+
 }

@@ -30,8 +30,12 @@ public class User {
     @OneToMany(mappedBy = "user")
     List<Orders> ordersList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user")
+    List<Rating> ratingList = new ArrayList<>();
+
     @ManyToOne(fetch = FetchType.LAZY)
     Role role = new Role();
+
 
     @Override
     public boolean equals(Object o) {

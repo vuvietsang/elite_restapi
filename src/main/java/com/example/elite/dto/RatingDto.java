@@ -14,4 +14,5 @@ public class RatingDto {
     private String ratingStar ;
     private String productId;
     private String productName;
+    private String userName;
 }
