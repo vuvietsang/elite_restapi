@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import java.time.LocalDate;
 
 @Entity
 @Builder
@@ -20,6 +21,7 @@ public class Rating {
     private int id;
     private String comment;
     private int ratingStar;
+    private LocalDate ratingDate;
 
     @ManyToOne
     Product product = new Product();

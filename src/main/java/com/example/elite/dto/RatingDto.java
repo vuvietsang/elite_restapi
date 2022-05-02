@@ -5,14 +5,18 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class RatingDto {
     private String comment;
-    private String ratingStar ;
-    private String productId;
+    private int ratingStar ;
+    private Long productId;
+    private int userId;
     private String productName;
     private String userName;
+    private LocalDate ratingDate;
 }

@@ -7,4 +7,5 @@ import org.springframework.data.domain.Pageable;
 
 public interface RatingService {
     public Page<RatingDto> getAllRatingByProductId(Long productId, Pageable pageable);
+    public RatingDto addRatingtoProduct(RatingDto dto);
 }

@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -53,6 +54,14 @@ public class UserProductController {
         Pageable pageable = PageRequest.of(pageNumber,pageSize);
         responseDTO.setData(ratingService.getAllRatingByProductId(id,pageable));
         responseDTO.setSuccessMessage("GET RATING SUCCESSFULLY!");
+        return ResponseEntity.ok().body(responseDTO);
+    }
+    @PreAuthorize("hasRole('USER')")
+    @PostMapping("/rating")
+    public ResponseEntity<ResponseDto> addRatingToProduct(@RequestBody RatingDto dto) {
+        ResponseDto<RatingDto> responseDTO = new ResponseDto();
+        responseDTO.setData(ratingService.addRatingtoProduct(dto));
+        responseDTO.setSuccessMessage("ADD RATING SUCCESSFULLY!");
         return ResponseEntity.ok().body(responseDTO);
     }
 }
