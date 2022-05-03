@@ -23,4 +23,6 @@ public interface UserService {
     public UserDto updateUser(User user, int id);
 
     public Page<UserDto> getAllUser(int pageNum, int pageSize);
+
+    public UserDto getUserById(int userId);
 }

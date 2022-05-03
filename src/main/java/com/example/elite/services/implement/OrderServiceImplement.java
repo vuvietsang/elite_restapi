@@ -82,7 +82,6 @@ public class OrderServiceImplement implements OrderSevice {
         order.setTotalPrice(totalPrice);
         return modelMapper.map(orderRepository.save(order), OrderDto.class);
     }
-
     @Override
     public OrderDto confirmOrder(int orderId) throws NoSuchElementException {
         Optional<Orders> orders = orderRepository.findById(orderId);

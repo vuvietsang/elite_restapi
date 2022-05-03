@@ -3,11 +3,13 @@ package com.example.elite.controller.user;
 import com.example.elite.dto.LoginDto;
 import com.example.elite.dto.LoginResponseDto;
 import com.example.elite.dto.ResponseDto;
+import com.example.elite.dto.UserDto;
 import com.example.elite.entities.User;
 import com.example.elite.services.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,6 +39,15 @@ public class UserController {
         LoginResponseDto loginResponseDTO = userService.register(user);
         responseDTO.setData(loginResponseDTO);
         responseDTO.setSuccessMessage("REGISTER_SUCCESS");
+        return ResponseEntity.ok().body(responseDTO);
+    }
+    @GetMapping("/{id}")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<ResponseDto> register(@PathVariable(name = "id") int userId)  {
+        ResponseDto<UserDto> responseDTO = new ResponseDto();
+        UserDto userDto = userService.getUserById(userId);
+        responseDTO.setData(userDto);
+        responseDTO.setSuccessMessage("GET USER BY ID SUCCESSFULLY");
         return ResponseEntity.ok().body(responseDTO);
     }
 }

@@ -151,4 +151,11 @@ public class UserServiceImplement implements UserService {
         Page<UserDto> pageUserDTO = pageUser.map(user -> modelMapper.map(user, UserDto.class));
         return pageUserDTO;
     }
+
+    @Override
+    public UserDto getUserById(int userId) throws NoSuchElementException {
+        User user = userRepository.findById(userId).get();
+        UserDto userDto = modelMapper.map(user,UserDto.class);
+        return userDto;
+    }
 }
