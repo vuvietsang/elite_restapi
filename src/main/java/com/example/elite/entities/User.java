@@ -26,6 +26,7 @@ public class User {
     private String phone;
     private boolean status;
     private LocalDate createDate;
+    private String address;
 
     @OneToMany(mappedBy = "user")
     List<Orders> ordersList = new ArrayList<>();

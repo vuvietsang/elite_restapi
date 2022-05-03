@@ -120,6 +120,7 @@ public class UserServiceImplement implements UserService {
         }
         User userBuild = User.builder()
                 .status(true)
+                .address(user.getAddress())
                 .createDate(LocalDate.now())
                 .role(role)
                 .phone(user.getPhone())
@@ -139,6 +140,8 @@ public class UserServiceImplement implements UserService {
         Optional<User> userTmp = userRepository.findById(id);
         userTmp.get().setFullName(user.getFullName());
         userTmp.get().setEmail(user.getEmail());
+        userTmp.get().setAddress(user.getAddress());
+        userTmp.get().setAvatar(user.getAvatar());
         userRepository.save(userTmp.get());
         UserDto userDTO = modelMapper.map(userTmp.get(), UserDto.class);
         return userDTO;

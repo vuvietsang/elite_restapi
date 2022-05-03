@@ -25,5 +25,8 @@ public class AddUserDto {
     private String phone;
     @Size(min = 6, message = "Password should have at least 6 characters!")
     private String password;
+    @NotBlank(message = "Avatar can not be null")
     private String avatar;
+    @NotBlank(message = "Address can not be null")
+    private String address;
 }
